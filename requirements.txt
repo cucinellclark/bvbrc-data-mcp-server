@@ -1,0 +1,38 @@
+# Core MCP and Flask dependencies
+flaskmcp==0.1.2
+Flask==3.1.2
+Werkzeug==3.1.1
+
+# HTTP client for API calls
+httpx==0.28.1
+httpx-sse==0.4.1
+
+# MCP protocol
+mcp==1.14.0
+fastmcp==2.12.3
+
+# Data processing
+pandas==2.3.0
+numpy==2.2.2
+
+# JSON and data handling
+pydantic==2.11.9
+pydantic-settings==2.10.1
+pydantic_core==2.33.2
+
+# HTTP and networking
+requests==2.32.3
+aiohttp==3.12.14
+httpcore==1.0.7
+
+# Utilities
+click==8.1.8
+typer==0.15.1
+rich==13.9.4
+
+# Development and testing
+pytest
+pytest-asyncio
+
+# BV-BRC Python API (install from GitHub)
+# git+ssh://git@github.com/cucinellclark/bvbrc-python-api.git@876a77f314340f4ee44a86cff43b7e4097b9e270#egg=bvbrc_solr_python_api
