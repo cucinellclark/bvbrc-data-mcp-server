@@ -26,7 +26,7 @@ source .venv/bin/activate
 
 First, install the bvbrc-python-api dependency:
 
-1. Clone the bvbrc-python-api repository:
+1. Clone the [bvbrc-python-api repository](https://github.com/cucinellclark/bvbrc-python-api):
 ```bash
 git clone https://github.com/cucinellclark/bvbrc-python-api.git
 cd bvbrc-python-api
