@@ -16,9 +16,11 @@ A Model Context Protocol (MCP) server that provides access to BV-BRC (Bacterial 
 - Python >= 3.10
 - pip
 
-### Install from GitHub
+### Install Required Dependencies
 
-1. Clone the repository:
+First, install the bvbrc-python-api dependency:
+
+1. Clone the bvbrc-python-api repository:
 ```bash
 git clone https://github.com/cucinellclark/bvbrc-python-api.git
 cd bvbrc-python-api
@@ -30,7 +32,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-3. Install the package in editable mode:
+3. Install the bvbrc-python-api package:
 ```bash
 pip install -U pip
 pip install -e .
