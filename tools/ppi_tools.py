@@ -1,0 +1,441 @@
+#!/usr/bin/env python3
+"""
+BV-BRC Protein-Protein Interaction Tools
+
+This module contains MCP tools for querying protein-protein interaction data from BV-BRC.
+"""
+
+import json
+from typing import Optional
+
+from flaskmcp import tool
+from data_functions import (
+    query_ppi_by_id,
+    query_ppi_by_filters,
+    query_ppi_by_category,
+    query_ppi_by_detection_method,
+    query_ppi_by_domain_a,
+    query_ppi_by_domain_b,
+    query_ppi_by_evidence,
+    query_ppi_by_feature_id_a,
+    query_ppi_by_feature_id_b,
+    query_ppi_by_gene_a,
+    query_ppi_by_gene_b,
+    query_ppi_by_genome_id_a,
+    query_ppi_by_genome_id_b,
+    query_ppi_by_genome_name_a,
+    query_ppi_by_genome_name_b,
+    query_ppi_by_interaction_type,
+    query_ppi_by_interactor_a,
+    query_ppi_by_interactor_b,
+    query_ppi_by_pmid,
+    query_ppi_by_source_db,
+    query_ppi_by_source_id,
+    query_ppi_by_taxon_id_a,
+    query_ppi_by_taxon_id_b,
+    query_ppi_by_date_inserted_range,
+    query_ppi_by_date_modified_range,
+    query_ppi_by_keyword,
+    query_ppi_all,
+    format_query_result
+)
+
+
+def register_ppi_tools(base_url: str, default_limit: int):
+    """Register all protein-protein interaction-related MCP tools with the Flask app."""
+    
+    @tool(name="bvbrc_ppi_get_by_id", description="Get protein-protein interaction data by ID. Parameters: id (str) - ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    def bvbrc_ppi_get_by_id(id: str, limit: int = default_limit,
+                           select: Optional[str] = None, sort: Optional[str] = None) -> str:
+        """
+        Get protein-protein interaction data by ID.
+        
+        Args:
+            id: The ID to query
+            limit: Maximum number of results to return (default: 1000)
+            select: Comma-separated list of fields to select (optional)
+            sort: Field to sort by (optional)
+        
+        Returns:
+            Formatted protein-protein interaction data
+        """
+        options = {"limit": limit}
+        if select:
+            options["select"] = select.split(",")
+        if sort:
+            options["sort"] = sort
+        
+        try:
+            result = query_ppi_by_id(id, options, base_url)
+            return format_query_result(result)
+        except Exception as e:
+            return f"Error querying protein-protein interaction by ID: {str(e)}"
+
+
+    @tool(name="bvbrc_ppi_query_by_filters", description="Query protein-protein interaction data by custom filters. Parameters: filters_json (str) - JSON string of filter criteria; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    def bvbrc_ppi_query_by_filters(filters_json: str, limit: int = default_limit,
+                                   select: Optional[str] = None, sort: Optional[str] = None) -> str:
+        """
+        Query protein-protein interaction data by custom filters.
+        
+        Args:
+            filters_json: JSON string of filter criteria
+            limit: Maximum number of results to return (default: 1000)
+            select: Comma-separated list of fields to select (optional)
+            sort: Field to sort by (optional)
+        
+        Returns:
+            Formatted protein-protein interaction data
+        """
+        try:
+            filters = json.loads(filters_json)
+        except json.JSONDecodeError as e:
+            return f"Error parsing filters JSON: {str(e)}"
+        
+        options = {"limit": limit}
+        if select:
+            options["select"] = select.split(",")
+        if sort:
+            options["sort"] = sort
+        
+        try:
+            result = query_ppi_by_filters(filters, options, base_url)
+            return format_query_result(result)
+        except Exception as e:
+            return f"Error querying protein-protein interaction by filters: {str(e)}"
+
+
+    @tool(name="bvbrc_ppi_get_by_interactor_a", description="Get protein-protein interaction data by interactor A. Parameters: interactor_a (str) - interactor A to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    def bvbrc_ppi_get_by_interactor_a(interactor_a: str, limit: int = default_limit,
+                                     select: Optional[str] = None, sort: Optional[str] = None) -> str:
+        """
+        Get protein-protein interaction data by interactor A.
+        
+        Args:
+            interactor_a: The interactor A to query
+            limit: Maximum number of results to return (default: 1000)
+            select: Comma-separated list of fields to select (optional)
+            sort: Field to sort by (optional)
+        
+        Returns:
+            Formatted protein-protein interaction data
+        """
+        options = {"limit": limit}
+        if select:
+            options["select"] = select.split(",")
+        if sort:
+            options["sort"] = sort
+        
+        try:
+            result = query_ppi_by_interactor_a(interactor_a, options, base_url)
+            return format_query_result(result)
+        except Exception as e:
+            return f"Error querying protein-protein interaction by interactor A: {str(e)}"
+
+
+    @tool(name="bvbrc_ppi_get_by_interactor_b", description="Get protein-protein interaction data by interactor B. Parameters: interactor_b (str) - interactor B to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    def bvbrc_ppi_get_by_interactor_b(interactor_b: str, limit: int = default_limit,
+                                     select: Optional[str] = None, sort: Optional[str] = None) -> str:
+        """
+        Get protein-protein interaction data by interactor B.
+        
+        Args:
+            interactor_b: The interactor B to query
+            limit: Maximum number of results to return (default: 1000)
+            select: Comma-separated list of fields to select (optional)
+            sort: Field to sort by (optional)
+        
+        Returns:
+            Formatted protein-protein interaction data
+        """
+        options = {"limit": limit}
+        if select:
+            options["select"] = select.split(",")
+        if sort:
+            options["sort"] = sort
+        
+        try:
+            result = query_ppi_by_interactor_b(interactor_b, options, base_url)
+            return format_query_result(result)
+        except Exception as e:
+            return f"Error querying protein-protein interaction by interactor B: {str(e)}"
+
+
+    @tool(name="bvbrc_ppi_get_by_genome_id_a", description="Get protein-protein interaction data by genome ID A. Parameters: genome_id_a (str) - genome ID A to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    def bvbrc_ppi_get_by_genome_id_a(genome_id_a: str, limit: int = default_limit,
+                                     select: Optional[str] = None, sort: Optional[str] = None) -> str:
+        """
+        Get protein-protein interaction data by genome ID A.
+        
+        Args:
+            genome_id_a: The genome ID A to query
+            limit: Maximum number of results to return (default: 1000)
+            select: Comma-separated list of fields to select (optional)
+            sort: Field to sort by (optional)
+        
+        Returns:
+            Formatted protein-protein interaction data
+        """
+        options = {"limit": limit}
+        if select:
+            options["select"] = select.split(",")
+        if sort:
+            options["sort"] = sort
+        
+        try:
+            result = query_ppi_by_genome_id_a(genome_id_a, options, base_url)
+            return format_query_result(result)
+        except Exception as e:
+            return f"Error querying protein-protein interaction by genome ID A: {str(e)}"
+
+
+    @tool(name="bvbrc_ppi_get_by_genome_id_b", description="Get protein-protein interaction data by genome ID B. Parameters: genome_id_b (str) - genome ID B to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    def bvbrc_ppi_get_by_genome_id_b(genome_id_b: str, limit: int = default_limit,
+                                     select: Optional[str] = None, sort: Optional[str] = None) -> str:
+        """
+        Get protein-protein interaction data by genome ID B.
+        
+        Args:
+            genome_id_b: The genome ID B to query
+            limit: Maximum number of results to return (default: 1000)
+            select: Comma-separated list of fields to select (optional)
+            sort: Field to sort by (optional)
+        
+        Returns:
+            Formatted protein-protein interaction data
+        """
+        options = {"limit": limit}
+        if select:
+            options["select"] = select.split(",")
+        if sort:
+            options["sort"] = sort
+        
+        try:
+            result = query_ppi_by_genome_id_b(genome_id_b, options, base_url)
+            return format_query_result(result)
+        except Exception as e:
+            return f"Error querying protein-protein interaction by genome ID B: {str(e)}"
+
+
+    @tool(name="bvbrc_ppi_get_by_interaction_type", description="Get protein-protein interaction data by interaction type. Parameters: interaction_type (str) - interaction type to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    def bvbrc_ppi_get_by_interaction_type(interaction_type: str, limit: int = default_limit,
+                                         select: Optional[str] = None, sort: Optional[str] = None) -> str:
+        """
+        Get protein-protein interaction data by interaction type.
+        
+        Args:
+            interaction_type: The interaction type to query
+            limit: Maximum number of results to return (default: 1000)
+            select: Comma-separated list of fields to select (optional)
+            sort: Field to sort by (optional)
+        
+        Returns:
+            Formatted protein-protein interaction data
+        """
+        options = {"limit": limit}
+        if select:
+            options["select"] = select.split(",")
+        if sort:
+            options["sort"] = sort
+        
+        try:
+            result = query_ppi_by_interaction_type(interaction_type, options, base_url)
+            return format_query_result(result)
+        except Exception as e:
+            return f"Error querying protein-protein interaction by interaction type: {str(e)}"
+
+
+    @tool(name="bvbrc_ppi_get_by_pmid", description="Get protein-protein interaction data by PMID. Parameters: pmid (str) - PMID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    def bvbrc_ppi_get_by_pmid(pmid: str, limit: int = default_limit,
+                             select: Optional[str] = None, sort: Optional[str] = None) -> str:
+        """
+        Get protein-protein interaction data by PMID.
+        
+        Args:
+            pmid: The PMID to query
+            limit: Maximum number of results to return (default: 1000)
+            select: Comma-separated list of fields to select (optional)
+            sort: Field to sort by (optional)
+        
+        Returns:
+            Formatted protein-protein interaction data
+        """
+        options = {"limit": limit}
+        if select:
+            options["select"] = select.split(",")
+        if sort:
+            options["sort"] = sort
+        
+        try:
+            result = query_ppi_by_pmid(pmid, options, base_url)
+            return format_query_result(result)
+        except Exception as e:
+            return f"Error querying protein-protein interaction by PMID: {str(e)}"
+
+
+    @tool(name="bvbrc_ppi_get_by_source_db", description="Get protein-protein interaction data by source database. Parameters: source_db (str) - source database to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    def bvbrc_ppi_get_by_source_db(source_db: str, limit: int = default_limit,
+                                   select: Optional[str] = None, sort: Optional[str] = None) -> str:
+        """
+        Get protein-protein interaction data by source database.
+        
+        Args:
+            source_db: The source database to query
+            limit: Maximum number of results to return (default: 1000)
+            select: Comma-separated list of fields to select (optional)
+            sort: Field to sort by (optional)
+        
+        Returns:
+            Formatted protein-protein interaction data
+        """
+        options = {"limit": limit}
+        if select:
+            options["select"] = select.split(",")
+        if sort:
+            options["sort"] = sort
+        
+        try:
+            result = query_ppi_by_source_db(source_db, options, base_url)
+            return format_query_result(result)
+        except Exception as e:
+            return f"Error querying protein-protein interaction by source database: {str(e)}"
+
+
+    @tool(name="bvbrc_ppi_get_by_taxon_id_a", description="Get protein-protein interaction data by taxon ID A. Parameters: taxon_id_a (int) - taxon ID A to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    def bvbrc_ppi_get_by_taxon_id_a(taxon_id_a: int, limit: int = default_limit,
+                                    select: Optional[str] = None, sort: Optional[str] = None) -> str:
+        """
+        Get protein-protein interaction data by taxon ID A.
+        
+        Args:
+            taxon_id_a: The taxon ID A to query
+            limit: Maximum number of results to return (default: 1000)
+            select: Comma-separated list of fields to select (optional)
+            sort: Field to sort by (optional)
+        
+        Returns:
+            Formatted protein-protein interaction data
+        """
+        options = {"limit": limit}
+        if select:
+            options["select"] = select.split(",")
+        if sort:
+            options["sort"] = sort
+        
+        try:
+            result = query_ppi_by_taxon_id_a(taxon_id_a, options, base_url)
+            return format_query_result(result)
+        except Exception as e:
+            return f"Error querying protein-protein interaction by taxon ID A: {str(e)}"
+
+
+    @tool(name="bvbrc_ppi_get_by_taxon_id_b", description="Get protein-protein interaction data by taxon ID B. Parameters: taxon_id_b (int) - taxon ID B to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    def bvbrc_ppi_get_by_taxon_id_b(taxon_id_b: int, limit: int = default_limit,
+                                    select: Optional[str] = None, sort: Optional[str] = None) -> str:
+        """
+        Get protein-protein interaction data by taxon ID B.
+        
+        Args:
+            taxon_id_b: The taxon ID B to query
+            limit: Maximum number of results to return (default: 1000)
+            select: Comma-separated list of fields to select (optional)
+            sort: Field to sort by (optional)
+        
+        Returns:
+            Formatted protein-protein interaction data
+        """
+        options = {"limit": limit}
+        if select:
+            options["select"] = select.split(",")
+        if sort:
+            options["sort"] = sort
+        
+        try:
+            result = query_ppi_by_taxon_id_b(taxon_id_b, options, base_url)
+            return format_query_result(result)
+        except Exception as e:
+            return f"Error querying protein-protein interaction by taxon ID B: {str(e)}"
+
+
+    @tool(name="bvbrc_ppi_get_by_date_inserted_range", description="Get protein-protein interaction data by date inserted range. Parameters: start_date (str) - start date in YYYY-MM-DD format; end_date (str) - end date in YYYY-MM-DD format; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    def bvbrc_ppi_get_by_date_inserted_range(start_date: str, end_date: str, limit: int = default_limit,
+                                            select: Optional[str] = None, sort: Optional[str] = None) -> str:
+        """
+        Get protein-protein interaction data by date inserted range.
+        
+        Args:
+            start_date: Start date in YYYY-MM-DD format
+            end_date: End date in YYYY-MM-DD format
+            limit: Maximum number of results to return (default: 1000)
+            select: Comma-separated list of fields to select (optional)
+            sort: Field to sort by (optional)
+        
+        Returns:
+            Formatted protein-protein interaction data
+        """
+        options = {"limit": limit}
+        if select:
+            options["select"] = select.split(",")
+        if sort:
+            options["sort"] = sort
+        
+        try:
+            result = query_ppi_by_date_inserted_range(start_date, end_date, options, base_url)
+            return format_query_result(result)
+        except Exception as e:
+            return f"Error querying protein-protein interaction by date inserted range: {str(e)}"
+
+
+    @tool(name="bvbrc_ppi_search_by_keyword", description="Search protein-protein interaction data by keyword. Parameters: keyword (str) - keyword to search for; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    def bvbrc_ppi_search_by_keyword(keyword: str, limit: int = default_limit,
+                                   select: Optional[str] = None, sort: Optional[str] = None) -> str:
+        """
+        Search protein-protein interaction data by keyword.
+        
+        Args:
+            keyword: The keyword to search for
+            limit: Maximum number of results to return (default: 1000)
+            select: Comma-separated list of fields to select (optional)
+            sort: Field to sort by (optional)
+        
+        Returns:
+            Formatted protein-protein interaction data
+        """
+        options = {"limit": limit}
+        if select:
+            options["select"] = select.split(",")
+        if sort:
+            options["sort"] = sort
+        
+        try:
+            result = query_ppi_by_keyword(keyword, options, base_url)
+            return format_query_result(result)
+        except Exception as e:
+            return f"Error searching protein-protein interaction by keyword: {str(e)}"
+
+
+    @tool(name="bvbrc_ppi_get_all", description="Get all protein-protein interaction data. Parameters: limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    def bvbrc_ppi_get_all(limit: int = default_limit,
+                          select: Optional[str] = None, sort: Optional[str] = None) -> str:
+        """
+        Get all protein-protein interaction data.
+        
+        Args:
+            limit: Maximum number of results to return (default: 1000)
+            select: Comma-separated list of fields to select (optional)
+            sort: Field to sort by (optional)
+        
+        Returns:
+            Formatted protein-protein interaction data
+        """
+        options = {"limit": limit}
+        if select:
+            options["select"] = select.split(",")
+        if sort:
+            options["sort"] = sort
+        
+        try:
+            result = query_ppi_all(options, base_url)
+            return format_query_result(result)
+        except Exception as e:
+            return f"Error querying all protein-protein interaction data: {str(e)}"
