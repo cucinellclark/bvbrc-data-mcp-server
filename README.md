@@ -32,7 +32,7 @@ git clone https://github.com/cucinellclark/bvbrc-python-api.git
 cd bvbrc-python-api
 ```
 
-3. Install the bvbrc-python-api package:
+2. Install the bvbrc-python-api package:
 ```bash
 pip install -U pip
 pip install -e .
