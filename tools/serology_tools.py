@@ -8,7 +8,6 @@ This module contains MCP tools for querying serology data from BV-BRC.
 import json
 from typing import Optional
 
-from flaskmcp import tool
 from data_functions import (
     query_serology_by_id,
     query_serology_by_filters,
@@ -48,10 +47,10 @@ from data_functions import (
 )
 
 
-def register_serology_tools(base_url: str, default_limit: int):
-    """Register all serology-related MCP tools with the Flask app."""
+def register_serology_tools(mcp, base_url: str, default_limit: int):
+    """Register all serology-related MCP tools with the FastMCP server."""
     
-    @tool(name="bvbrc_serology_get_by_id", description="Get serology data by ID. Parameters: id (str) - ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_serology_get_by_id(id: str, limit: int = default_limit,
                                  select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -79,7 +78,7 @@ def register_serology_tools(base_url: str, default_limit: int):
             return f"Error querying serology by ID: {str(e)}"
 
 
-    @tool(name="bvbrc_serology_query_by_filters", description="Query serology data by custom filters. Parameters: filters_json (str) - JSON string of filter criteria; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_serology_query_by_filters(filters_json: str, limit: int = default_limit,
                                         select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -112,7 +111,7 @@ def register_serology_tools(base_url: str, default_limit: int):
             return f"Error querying serology by filters: {str(e)}"
 
 
-    @tool(name="bvbrc_serology_get_by_collection_country", description="Get serology data by collection country. Parameters: collection_country (str) - collection country to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_serology_get_by_collection_country(collection_country: str, limit: int = default_limit,
                                                 select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -140,7 +139,7 @@ def register_serology_tools(base_url: str, default_limit: int):
             return f"Error querying serology by collection country: {str(e)}"
 
 
-    @tool(name="bvbrc_serology_get_by_host_species", description="Get serology data by host species. Parameters: host_species (str) - host species to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_serology_get_by_host_species(host_species: str, limit: int = default_limit,
                                            select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -168,7 +167,7 @@ def register_serology_tools(base_url: str, default_limit: int):
             return f"Error querying serology by host species: {str(e)}"
 
 
-    @tool(name="bvbrc_serology_get_by_serotype", description="Get serology data by serotype. Parameters: serotype (str) - serotype to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_serology_get_by_serotype(serotype: str, limit: int = default_limit,
                                        select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -196,7 +195,7 @@ def register_serology_tools(base_url: str, default_limit: int):
             return f"Error querying serology by serotype: {str(e)}"
 
 
-    @tool(name="bvbrc_serology_get_by_test_type", description="Get serology data by test type. Parameters: test_type (str) - test type to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_serology_get_by_test_type(test_type: str, limit: int = default_limit,
                                         select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -224,7 +223,7 @@ def register_serology_tools(base_url: str, default_limit: int):
             return f"Error querying serology by test type: {str(e)}"
 
 
-    @tool(name="bvbrc_serology_get_by_test_result", description="Get serology data by test result. Parameters: test_result (str) - test result to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_serology_get_by_test_result(test_result: str, limit: int = default_limit,
                                           select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -252,7 +251,7 @@ def register_serology_tools(base_url: str, default_limit: int):
             return f"Error querying serology by test result: {str(e)}"
 
 
-    @tool(name="bvbrc_serology_get_by_collection_date_range", description="Get serology data by collection date range. Parameters: start_date (str) - start date in YYYY-MM-DD format; end_date (str) - end date in YYYY-MM-DD format; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_serology_get_by_collection_date_range(start_date: str, end_date: str, limit: int = default_limit,
                                                     select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -281,7 +280,7 @@ def register_serology_tools(base_url: str, default_limit: int):
             return f"Error querying serology by collection date range: {str(e)}"
 
 
-    @tool(name="bvbrc_serology_search_by_keyword", description="Search serology data by keyword. Parameters: keyword (str) - keyword to search for; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_serology_search_by_keyword(keyword: str, limit: int = default_limit,
                                          select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -309,7 +308,7 @@ def register_serology_tools(base_url: str, default_limit: int):
             return f"Error searching serology by keyword: {str(e)}"
 
 
-    @tool(name="bvbrc_serology_get_all", description="Get all serology data. Parameters: limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_serology_get_all(limit: int = default_limit,
                               select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """

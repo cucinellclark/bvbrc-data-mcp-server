@@ -8,7 +8,6 @@ This module contains MCP tools for querying strain data from BV-BRC.
 import json
 from typing import Optional
 
-from flaskmcp import tool
 from data_functions import (
     query_strain_by_id,
     query_strain_by_filters,
@@ -42,10 +41,10 @@ from data_functions import (
 )
 
 
-def register_strain_tools(base_url: str, default_limit: int):
-    """Register all strain-related MCP tools with the Flask app."""
+def register_strain_tools(mcp, base_url: str, default_limit: int):
+    """Register all strain-related MCP tools with the FastMCP server."""
     
-    @tool(name="bvbrc_strain_get_by_id", description="Get strain data by ID. Parameters: id (str) - ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_strain_get_by_id(id: str, limit: int = default_limit,
                               select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -73,7 +72,7 @@ def register_strain_tools(base_url: str, default_limit: int):
             return f"Error querying strain by ID: {str(e)}"
 
 
-    @tool(name="bvbrc_strain_query_by_filters", description="Query strain data by custom filters. Parameters: filters_json (str) - JSON string of filter criteria; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_strain_query_by_filters(filters_json: str, limit: int = default_limit,
                                      select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -106,7 +105,7 @@ def register_strain_tools(base_url: str, default_limit: int):
             return f"Error querying strain by filters: {str(e)}"
 
 
-    @tool(name="bvbrc_strain_get_by_species", description="Get strain data by species. Parameters: species (str) - species to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_strain_get_by_species(species: str, limit: int = default_limit,
                                    select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -134,7 +133,7 @@ def register_strain_tools(base_url: str, default_limit: int):
             return f"Error querying strain by species: {str(e)}"
 
 
-    @tool(name="bvbrc_strain_get_by_strain", description="Get strain data by strain name. Parameters: strain (str) - strain name to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_strain_get_by_strain(strain: str, limit: int = default_limit,
                                   select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -162,7 +161,7 @@ def register_strain_tools(base_url: str, default_limit: int):
             return f"Error querying strain by strain name: {str(e)}"
 
 
-    @tool(name="bvbrc_strain_get_by_subtype", description="Get strain data by subtype. Parameters: subtype (str) - subtype to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_strain_get_by_subtype(subtype: str, limit: int = default_limit,
                                    select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -190,7 +189,7 @@ def register_strain_tools(base_url: str, default_limit: int):
             return f"Error querying strain by subtype: {str(e)}"
 
 
-    @tool(name="bvbrc_strain_get_by_taxon_id", description="Get strain data by taxon ID. Parameters: taxon_id (int) - taxon ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_strain_get_by_taxon_id(taxon_id: int, limit: int = default_limit,
                                      select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -218,7 +217,7 @@ def register_strain_tools(base_url: str, default_limit: int):
             return f"Error querying strain by taxon ID: {str(e)}"
 
 
-    @tool(name="bvbrc_strain_get_by_collection_year_range", description="Get strain data by collection year range. Parameters: start_year (int) - start year; end_year (int) - end year; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_strain_get_by_collection_year_range(start_year: int, end_year: int, limit: int = default_limit,
                                                  select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -247,7 +246,7 @@ def register_strain_tools(base_url: str, default_limit: int):
             return f"Error querying strain by collection year range: {str(e)}"
 
 
-    @tool(name="bvbrc_strain_get_by_date_inserted_range", description="Get strain data by date inserted range. Parameters: start_date (str) - start date in YYYY-MM-DD format; end_date (str) - end date in YYYY-MM-DD format; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_strain_get_by_date_inserted_range(start_date: str, end_date: str, limit: int = default_limit,
                                                 select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -276,7 +275,7 @@ def register_strain_tools(base_url: str, default_limit: int):
             return f"Error querying strain by date inserted range: {str(e)}"
 
 
-    @tool(name="bvbrc_strain_search_by_keyword", description="Search strain data by keyword. Parameters: keyword (str) - keyword to search for; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_strain_search_by_keyword(keyword: str, limit: int = default_limit,
                                       select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -304,7 +303,7 @@ def register_strain_tools(base_url: str, default_limit: int):
             return f"Error searching strain by keyword: {str(e)}"
 
 
-    @tool(name="bvbrc_strain_get_all", description="Get all strain data. Parameters: limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_strain_get_all(limit: int = default_limit,
                             select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """

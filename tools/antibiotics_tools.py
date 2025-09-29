@@ -8,7 +8,6 @@ This module contains MCP tools for querying antibiotic data from BV-BRC.
 import json
 from typing import Optional
 
-from flaskmcp import tool
 from data_functions import (
     query_antibiotics_by_pubchem_cid,
     query_antibiotics_by_filters,
@@ -27,10 +26,10 @@ from data_functions import (
 )
 
 
-def register_antibiotics_tools(base_url: str, default_limit: int):
-    """Register all antibiotics-related MCP tools with the Flask app."""
+def register_antibiotics_tools(mcp, base_url: str, default_limit: int):
+    """Register all antibiotics-related MCP tools with the FastMCP server."""
     
-    @tool(name="bvbrc_antibiotics_get_by_pubchem_cid", description="Get antibiotic data by PubChem CID. Parameters: pubchem_cid (str) - PubChem CID to query (e.g., '2244'); limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_antibiotics_get_by_pubchem_cid(pubchem_cid: str, limit: int = default_limit,
                                             select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -58,7 +57,7 @@ def register_antibiotics_tools(base_url: str, default_limit: int):
             return f"Error querying antibiotics by PubChem CID: {str(e)}"
 
 
-    @tool(name="bvbrc_antibiotics_query_by_filters", description="Query antibiotic data by custom filters. Parameters: filters_json (str) - JSON string of filter criteria (e.g., '{\"antibiotic_name\": \"penicillin\", \"mechanism_of_action\": \"cell wall synthesis inhibitor\"}'); limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_antibiotics_query_by_filters(filters_json: str, limit: int = default_limit,
                                           select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -91,7 +90,7 @@ def register_antibiotics_tools(base_url: str, default_limit: int):
             return f"Error querying antibiotics by filters: {str(e)}"
 
 
-    @tool(name="bvbrc_antibiotics_search_by_keyword", description="Search antibiotic data by keyword. Parameters: keyword (str) - keyword to search for (e.g., 'penicillin'); limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_antibiotics_search_by_keyword(keyword: str, limit: int = default_limit,
                                            select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -119,7 +118,7 @@ def register_antibiotics_tools(base_url: str, default_limit: int):
             return f"Error searching antibiotics by keyword: {str(e)}"
 
 
-    @tool(name="bvbrc_antibiotics_get_by_name", description="Get antibiotic data by antibiotic name. Parameters: antibiotic_name (str) - antibiotic name to query (e.g., 'penicillin'); limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_antibiotics_get_by_name(antibiotic_name: str, limit: int = default_limit,
                                      select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -147,7 +146,7 @@ def register_antibiotics_tools(base_url: str, default_limit: int):
             return f"Error querying antibiotics by name: {str(e)}"
 
 
-    @tool(name="bvbrc_antibiotics_get_by_cas_id", description="Get antibiotic data by CAS ID. Parameters: cas_id (str) - CAS ID to query (e.g., '61-33-6'); limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_antibiotics_get_by_cas_id(cas_id: str, limit: int = default_limit,
                                         select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -175,7 +174,7 @@ def register_antibiotics_tools(base_url: str, default_limit: int):
             return f"Error querying antibiotics by CAS ID: {str(e)}"
 
 
-    @tool(name="bvbrc_antibiotics_get_by_molecular_formula", description="Get antibiotic data by molecular formula. Parameters: molecular_formula (str) - molecular formula to query (e.g., 'C16H18N2O4S'); limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_antibiotics_get_by_molecular_formula(molecular_formula: str, limit: int = default_limit,
                                                    select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -203,7 +202,7 @@ def register_antibiotics_tools(base_url: str, default_limit: int):
             return f"Error querying antibiotics by molecular formula: {str(e)}"
 
 
-    @tool(name="bvbrc_antibiotics_get_by_atc_classification", description="Get antibiotic data by ATC classification. Parameters: atc_classification (str) - ATC classification to query (e.g., 'J01CA04'); limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_antibiotics_get_by_atc_classification(atc_classification: str, limit: int = default_limit,
                                                      select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -231,7 +230,7 @@ def register_antibiotics_tools(base_url: str, default_limit: int):
             return f"Error querying antibiotics by ATC classification: {str(e)}"
 
 
-    @tool(name="bvbrc_antibiotics_get_by_mechanism_of_action", description="Get antibiotic data by mechanism of action. Parameters: mechanism_of_action (str) - mechanism of action to query (e.g., 'cell wall synthesis inhibitor'); limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_antibiotics_get_by_mechanism_of_action(mechanism_of_action: str, limit: int = default_limit,
                                                      select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -259,7 +258,7 @@ def register_antibiotics_tools(base_url: str, default_limit: int):
             return f"Error querying antibiotics by mechanism of action: {str(e)}"
 
 
-    @tool(name="bvbrc_antibiotics_get_by_pharmacological_class", description="Get antibiotic data by pharmacological class. Parameters: pharmacological_class (str) - pharmacological class to query (e.g., 'beta-lactam'); limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_antibiotics_get_by_pharmacological_class(pharmacological_class: str, limit: int = default_limit,
                                                        select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -287,7 +286,7 @@ def register_antibiotics_tools(base_url: str, default_limit: int):
             return f"Error querying antibiotics by pharmacological class: {str(e)}"
 
 
-    @tool(name="bvbrc_antibiotics_get_by_synonym", description="Get antibiotic data by synonym. Parameters: synonym (str) - synonym to query (e.g., 'benzylpenicillin'); limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_antibiotics_get_by_synonym(synonym: str, limit: int = default_limit,
                                         select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -315,7 +314,7 @@ def register_antibiotics_tools(base_url: str, default_limit: int):
             return f"Error querying antibiotics by synonym: {str(e)}"
 
 
-    @tool(name="bvbrc_antibiotics_get_by_molecular_weight_range", description="Get antibiotic data by molecular weight range. Parameters: min_weight (float) - minimum molecular weight; max_weight (float) - maximum molecular weight; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_antibiotics_get_by_molecular_weight_range(min_weight: float, max_weight: float, limit: int = default_limit,
                                                        select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -344,7 +343,7 @@ def register_antibiotics_tools(base_url: str, default_limit: int):
             return f"Error querying antibiotics by molecular weight range: {str(e)}"
 
 
-    @tool(name="bvbrc_antibiotics_get_by_date_range", description="Get antibiotic data by date range. Parameters: start_date (str) - start date in YYYY-MM-DD format; end_date (str) - end date in YYYY-MM-DD format; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_antibiotics_get_by_date_range(start_date: str, end_date: str, limit: int = default_limit,
                                            select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -373,7 +372,7 @@ def register_antibiotics_tools(base_url: str, default_limit: int):
             return f"Error querying antibiotics by date range: {str(e)}"
 
 
-    @tool(name="bvbrc_antibiotics_get_all", description="Get all antibiotic data. Parameters: limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_antibiotics_get_all(limit: int = default_limit,
                                  select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """

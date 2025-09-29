@@ -8,7 +8,6 @@ This module contains MCP tools for querying pathway data from BV-BRC.
 import json
 from typing import Optional
 
-from flaskmcp import tool
 from data_functions import (
     query_pathway_by_id,
     query_pathway_by_filters,
@@ -44,10 +43,10 @@ from data_functions import (
 )
 
 
-def register_pathway_tools(base_url: str, default_limit: int):
-    """Register all pathway-related MCP tools with the Flask app."""
+def register_pathway_tools(mcp, base_url: str, default_limit: int):
+    """Register all pathway-related MCP tools with the FastMCP server."""
     
-    @tool(name="bvbrc_pathway_get_by_id", description="Get pathway data by ID. Parameters: id (str) - ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_pathway_get_by_id(id: str, limit: int = default_limit,
                                 select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -75,7 +74,7 @@ def register_pathway_tools(base_url: str, default_limit: int):
             return f"Error querying pathway by ID: {str(e)}"
 
 
-    @tool(name="bvbrc_pathway_query_by_filters", description="Query pathway data by custom filters. Parameters: filters_json (str) - JSON string of filter criteria; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_pathway_query_by_filters(filters_json: str, limit: int = default_limit,
                                        select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -108,7 +107,7 @@ def register_pathway_tools(base_url: str, default_limit: int):
             return f"Error querying pathway by filters: {str(e)}"
 
 
-    @tool(name="bvbrc_pathway_get_by_genome_id", description="Get pathway data by genome ID. Parameters: genome_id (str) - genome ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_pathway_get_by_genome_id(genome_id: str, limit: int = default_limit,
                                        select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -136,7 +135,7 @@ def register_pathway_tools(base_url: str, default_limit: int):
             return f"Error querying pathway by genome ID: {str(e)}"
 
 
-    @tool(name="bvbrc_pathway_get_by_genome_name", description="Get pathway data by genome name. Parameters: genome_name (str) - genome name to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_pathway_get_by_genome_name(genome_name: str, limit: int = default_limit,
                                         select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -164,7 +163,7 @@ def register_pathway_tools(base_url: str, default_limit: int):
             return f"Error querying pathway by genome name: {str(e)}"
 
 
-    @tool(name="bvbrc_pathway_get_by_pathway_id", description="Get pathway data by pathway ID. Parameters: pathway_id (str) - pathway ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_pathway_get_by_pathway_id(pathway_id: str, limit: int = default_limit,
                                         select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -192,7 +191,7 @@ def register_pathway_tools(base_url: str, default_limit: int):
             return f"Error querying pathway by pathway ID: {str(e)}"
 
 
-    @tool(name="bvbrc_pathway_get_by_pathway_name", description="Get pathway data by pathway name. Parameters: pathway_name (str) - pathway name to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_pathway_get_by_pathway_name(pathway_name: str, limit: int = default_limit,
                                          select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -220,7 +219,7 @@ def register_pathway_tools(base_url: str, default_limit: int):
             return f"Error querying pathway by pathway name: {str(e)}"
 
 
-    @tool(name="bvbrc_pathway_get_by_ec_number", description="Get pathway data by EC number. Parameters: ec_number (str) - EC number to query (e.g., '1.1.1.1'); limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_pathway_get_by_ec_number(ec_number: str, limit: int = default_limit,
                                        select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -248,7 +247,7 @@ def register_pathway_tools(base_url: str, default_limit: int):
             return f"Error querying pathway by EC number: {str(e)}"
 
 
-    @tool(name="bvbrc_pathway_get_by_gene", description="Get pathway data by gene. Parameters: gene (str) - gene to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_pathway_get_by_gene(gene: str, limit: int = default_limit,
                                  select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -276,7 +275,7 @@ def register_pathway_tools(base_url: str, default_limit: int):
             return f"Error querying pathway by gene: {str(e)}"
 
 
-    @tool(name="bvbrc_pathway_get_by_taxon_id", description="Get pathway data by taxon ID. Parameters: taxon_id (int) - taxon ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_pathway_get_by_taxon_id(taxon_id: int, limit: int = default_limit,
                                       select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -304,7 +303,7 @@ def register_pathway_tools(base_url: str, default_limit: int):
             return f"Error querying pathway by taxon ID: {str(e)}"
 
 
-    @tool(name="bvbrc_pathway_get_by_date_inserted_range", description="Get pathway data by date inserted range. Parameters: start_date (str) - start date in YYYY-MM-DD format; end_date (str) - end date in YYYY-MM-DD format; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_pathway_get_by_date_inserted_range(start_date: str, end_date: str, limit: int = default_limit,
                                                  select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -333,7 +332,7 @@ def register_pathway_tools(base_url: str, default_limit: int):
             return f"Error querying pathway by date inserted range: {str(e)}"
 
 
-    @tool(name="bvbrc_pathway_search_by_keyword", description="Search pathway data by keyword. Parameters: keyword (str) - keyword to search for; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_pathway_search_by_keyword(keyword: str, limit: int = default_limit,
                                        select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -361,7 +360,7 @@ def register_pathway_tools(base_url: str, default_limit: int):
             return f"Error searching pathway by keyword: {str(e)}"
 
 
-    @tool(name="bvbrc_pathway_get_all", description="Get all pathway data. Parameters: limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_pathway_get_all(limit: int = default_limit,
                              select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """

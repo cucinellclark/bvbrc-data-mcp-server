@@ -8,7 +8,6 @@ This module contains MCP tools for querying protein-protein interaction data fro
 import json
 from typing import Optional
 
-from flaskmcp import tool
 from data_functions import (
     query_ppi_by_id,
     query_ppi_by_filters,
@@ -41,10 +40,10 @@ from data_functions import (
 )
 
 
-def register_ppi_tools(base_url: str, default_limit: int):
+def register_ppi_tools(mcp, base_url: str, default_limit: int):
     """Register all protein-protein interaction-related MCP tools with the Flask app."""
     
-    @tool(name="bvbrc_ppi_get_by_id", description="Get protein-protein interaction data by ID. Parameters: id (str) - ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_ppi_get_by_id(id: str, limit: int = default_limit,
                            select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -72,7 +71,7 @@ def register_ppi_tools(base_url: str, default_limit: int):
             return f"Error querying protein-protein interaction by ID: {str(e)}"
 
 
-    @tool(name="bvbrc_ppi_query_by_filters", description="Query protein-protein interaction data by custom filters. Parameters: filters_json (str) - JSON string of filter criteria; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_ppi_query_by_filters(filters_json: str, limit: int = default_limit,
                                    select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -105,7 +104,7 @@ def register_ppi_tools(base_url: str, default_limit: int):
             return f"Error querying protein-protein interaction by filters: {str(e)}"
 
 
-    @tool(name="bvbrc_ppi_get_by_interactor_a", description="Get protein-protein interaction data by interactor A. Parameters: interactor_a (str) - interactor A to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_ppi_get_by_interactor_a(interactor_a: str, limit: int = default_limit,
                                      select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -133,7 +132,7 @@ def register_ppi_tools(base_url: str, default_limit: int):
             return f"Error querying protein-protein interaction by interactor A: {str(e)}"
 
 
-    @tool(name="bvbrc_ppi_get_by_interactor_b", description="Get protein-protein interaction data by interactor B. Parameters: interactor_b (str) - interactor B to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_ppi_get_by_interactor_b(interactor_b: str, limit: int = default_limit,
                                      select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -161,7 +160,7 @@ def register_ppi_tools(base_url: str, default_limit: int):
             return f"Error querying protein-protein interaction by interactor B: {str(e)}"
 
 
-    @tool(name="bvbrc_ppi_get_by_genome_id_a", description="Get protein-protein interaction data by genome ID A. Parameters: genome_id_a (str) - genome ID A to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_ppi_get_by_genome_id_a(genome_id_a: str, limit: int = default_limit,
                                      select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -189,7 +188,7 @@ def register_ppi_tools(base_url: str, default_limit: int):
             return f"Error querying protein-protein interaction by genome ID A: {str(e)}"
 
 
-    @tool(name="bvbrc_ppi_get_by_genome_id_b", description="Get protein-protein interaction data by genome ID B. Parameters: genome_id_b (str) - genome ID B to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_ppi_get_by_genome_id_b(genome_id_b: str, limit: int = default_limit,
                                      select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -217,7 +216,7 @@ def register_ppi_tools(base_url: str, default_limit: int):
             return f"Error querying protein-protein interaction by genome ID B: {str(e)}"
 
 
-    @tool(name="bvbrc_ppi_get_by_interaction_type", description="Get protein-protein interaction data by interaction type. Parameters: interaction_type (str) - interaction type to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_ppi_get_by_interaction_type(interaction_type: str, limit: int = default_limit,
                                          select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -245,7 +244,7 @@ def register_ppi_tools(base_url: str, default_limit: int):
             return f"Error querying protein-protein interaction by interaction type: {str(e)}"
 
 
-    @tool(name="bvbrc_ppi_get_by_pmid", description="Get protein-protein interaction data by PMID. Parameters: pmid (str) - PMID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_ppi_get_by_pmid(pmid: str, limit: int = default_limit,
                              select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -273,7 +272,7 @@ def register_ppi_tools(base_url: str, default_limit: int):
             return f"Error querying protein-protein interaction by PMID: {str(e)}"
 
 
-    @tool(name="bvbrc_ppi_get_by_source_db", description="Get protein-protein interaction data by source database. Parameters: source_db (str) - source database to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_ppi_get_by_source_db(source_db: str, limit: int = default_limit,
                                    select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -301,7 +300,7 @@ def register_ppi_tools(base_url: str, default_limit: int):
             return f"Error querying protein-protein interaction by source database: {str(e)}"
 
 
-    @tool(name="bvbrc_ppi_get_by_taxon_id_a", description="Get protein-protein interaction data by taxon ID A. Parameters: taxon_id_a (int) - taxon ID A to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_ppi_get_by_taxon_id_a(taxon_id_a: int, limit: int = default_limit,
                                     select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -329,7 +328,7 @@ def register_ppi_tools(base_url: str, default_limit: int):
             return f"Error querying protein-protein interaction by taxon ID A: {str(e)}"
 
 
-    @tool(name="bvbrc_ppi_get_by_taxon_id_b", description="Get protein-protein interaction data by taxon ID B. Parameters: taxon_id_b (int) - taxon ID B to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_ppi_get_by_taxon_id_b(taxon_id_b: int, limit: int = default_limit,
                                     select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -357,7 +356,7 @@ def register_ppi_tools(base_url: str, default_limit: int):
             return f"Error querying protein-protein interaction by taxon ID B: {str(e)}"
 
 
-    @tool(name="bvbrc_ppi_get_by_date_inserted_range", description="Get protein-protein interaction data by date inserted range. Parameters: start_date (str) - start date in YYYY-MM-DD format; end_date (str) - end date in YYYY-MM-DD format; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_ppi_get_by_date_inserted_range(start_date: str, end_date: str, limit: int = default_limit,
                                             select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -386,7 +385,7 @@ def register_ppi_tools(base_url: str, default_limit: int):
             return f"Error querying protein-protein interaction by date inserted range: {str(e)}"
 
 
-    @tool(name="bvbrc_ppi_search_by_keyword", description="Search protein-protein interaction data by keyword. Parameters: keyword (str) - keyword to search for; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_ppi_search_by_keyword(keyword: str, limit: int = default_limit,
                                    select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -414,7 +413,7 @@ def register_ppi_tools(base_url: str, default_limit: int):
             return f"Error searching protein-protein interaction by keyword: {str(e)}"
 
 
-    @tool(name="bvbrc_ppi_get_all", description="Get all protein-protein interaction data. Parameters: limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_ppi_get_all(limit: int = default_limit,
                           select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """

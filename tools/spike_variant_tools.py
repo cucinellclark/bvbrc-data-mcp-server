@@ -8,7 +8,6 @@ This module contains MCP tools for querying spike variant data from BV-BRC.
 import json
 from typing import Optional
 
-from flaskmcp import tool
 from data_functions import (
     query_spike_variant_by_id,
     query_spike_variant_by_filters,
@@ -33,10 +32,10 @@ from data_functions import (
 )
 
 
-def register_spike_variant_tools(base_url: str, default_limit: int):
-    """Register all spike variant-related MCP tools with the Flask app."""
+def register_spike_variant_tools(mcp, base_url: str, default_limit: int):
+    """Register all spike variant-related MCP tools with the FastMCP server."""
     
-    @tool(name="bvbrc_spike_variant_get_by_id", description="Get spike variant data by ID. Parameters: id (str) - ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_spike_variant_get_by_id(id: str, limit: int = default_limit,
                                       select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -64,7 +63,7 @@ def register_spike_variant_tools(base_url: str, default_limit: int):
             return f"Error querying spike variant by ID: {str(e)}"
 
 
-    @tool(name="bvbrc_spike_variant_query_by_filters", description="Query spike variant data by custom filters. Parameters: filters_json (str) - JSON string of filter criteria; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_spike_variant_query_by_filters(filters_json: str, limit: int = default_limit,
                                             select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -97,7 +96,7 @@ def register_spike_variant_tools(base_url: str, default_limit: int):
             return f"Error querying spike variant by filters: {str(e)}"
 
 
-    @tool(name="bvbrc_spike_variant_get_by_aa_variant", description="Get spike variant data by amino acid variant. Parameters: aa_variant (str) - amino acid variant to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_spike_variant_get_by_aa_variant(aa_variant: str, limit: int = default_limit,
                                              select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -125,7 +124,7 @@ def register_spike_variant_tools(base_url: str, default_limit: int):
             return f"Error querying spike variant by amino acid variant: {str(e)}"
 
 
-    @tool(name="bvbrc_spike_variant_get_by_country", description="Get spike variant data by country. Parameters: country (str) - country to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_spike_variant_get_by_country(country: str, limit: int = default_limit,
                                           select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -153,7 +152,7 @@ def register_spike_variant_tools(base_url: str, default_limit: int):
             return f"Error querying spike variant by country: {str(e)}"
 
 
-    @tool(name="bvbrc_spike_variant_get_by_region", description="Get spike variant data by region. Parameters: region (str) - region to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_spike_variant_get_by_region(region: str, limit: int = default_limit,
                                          select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -181,7 +180,7 @@ def register_spike_variant_tools(base_url: str, default_limit: int):
             return f"Error querying spike variant by region: {str(e)}"
 
 
-    @tool(name="bvbrc_spike_variant_get_by_growth_rate_range", description="Get spike variant data by growth rate range. Parameters: min_growth_rate (float) - minimum growth rate; max_growth_rate (float) - maximum growth rate; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_spike_variant_get_by_growth_rate_range(min_growth_rate: float, max_growth_rate: float, limit: int = default_limit,
                                                     select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -210,7 +209,7 @@ def register_spike_variant_tools(base_url: str, default_limit: int):
             return f"Error querying spike variant by growth rate range: {str(e)}"
 
 
-    @tool(name="bvbrc_spike_variant_get_by_prevalence_range", description="Get spike variant data by prevalence range. Parameters: min_prevalence (float) - minimum prevalence; max_prevalence (float) - maximum prevalence; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_spike_variant_get_by_prevalence_range(min_prevalence: float, max_prevalence: float, limit: int = default_limit,
                                                    select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -239,7 +238,7 @@ def register_spike_variant_tools(base_url: str, default_limit: int):
             return f"Error querying spike variant by prevalence range: {str(e)}"
 
 
-    @tool(name="bvbrc_spike_variant_get_by_date_range", description="Get spike variant data by date range. Parameters: start_date (str) - start date in YYYY-MM-DD format; end_date (str) - end date in YYYY-MM-DD format; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_spike_variant_get_by_date_range(start_date: str, end_date: str, limit: int = default_limit,
                                              select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -268,7 +267,7 @@ def register_spike_variant_tools(base_url: str, default_limit: int):
             return f"Error querying spike variant by date range: {str(e)}"
 
 
-    @tool(name="bvbrc_spike_variant_search_by_keyword", description="Search spike variant data by keyword. Parameters: keyword (str) - keyword to search for; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_spike_variant_search_by_keyword(keyword: str, limit: int = default_limit,
                                              select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -296,7 +295,7 @@ def register_spike_variant_tools(base_url: str, default_limit: int):
             return f"Error searching spike variant by keyword: {str(e)}"
 
 
-    @tool(name="bvbrc_spike_variant_get_all", description="Get all spike variant data. Parameters: limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_spike_variant_get_all(limit: int = default_limit,
                                    select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """

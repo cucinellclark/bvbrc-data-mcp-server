@@ -8,7 +8,6 @@ This module contains MCP tools for querying protein structure data from BV-BRC.
 import json
 from typing import Optional
 
-from flaskmcp import tool
 from data_functions import (
     query_protein_structure_by_id,
     query_protein_structure_by_filters,
@@ -41,10 +40,10 @@ from data_functions import (
 )
 
 
-def register_protein_structure_tools(base_url: str, default_limit: int):
-    """Register all protein structure-related MCP tools with the Flask app."""
+def register_protein_structure_tools(mcp, base_url: str, default_limit: int):
+    """Register all protein structure-related MCP tools with the FastMCP server."""
     
-    @tool(name="bvbrc_protein_structure_get_by_id", description="Get protein structure data by PDB ID. Parameters: pdb_id (str) - PDB ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_protein_structure_get_by_id(pdb_id: str, limit: int = default_limit,
                                          select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -72,7 +71,7 @@ def register_protein_structure_tools(base_url: str, default_limit: int):
             return f"Error querying protein structure by PDB ID: {str(e)}"
 
 
-    @tool(name="bvbrc_protein_structure_query_by_filters", description="Query protein structure data by custom filters. Parameters: filters_json (str) - JSON string of filter criteria; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_protein_structure_query_by_filters(filters_json: str, limit: int = default_limit,
                                                 select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -105,7 +104,7 @@ def register_protein_structure_tools(base_url: str, default_limit: int):
             return f"Error querying protein structure by filters: {str(e)}"
 
 
-    @tool(name="bvbrc_protein_structure_get_by_feature_id", description="Get protein structure data by feature ID. Parameters: feature_id (str) - feature ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_protein_structure_get_by_feature_id(feature_id: str, limit: int = default_limit,
                                                  select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -133,7 +132,7 @@ def register_protein_structure_tools(base_url: str, default_limit: int):
             return f"Error querying protein structure by feature ID: {str(e)}"
 
 
-    @tool(name="bvbrc_protein_structure_get_by_genome_id", description="Get protein structure data by genome ID. Parameters: genome_id (str) - genome ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_protein_structure_get_by_genome_id(genome_id: str, limit: int = default_limit,
                                                 select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -161,7 +160,7 @@ def register_protein_structure_tools(base_url: str, default_limit: int):
             return f"Error querying protein structure by genome ID: {str(e)}"
 
 
-    @tool(name="bvbrc_protein_structure_get_by_organism_name", description="Get protein structure data by organism name. Parameters: organism_name (str) - organism name to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_protein_structure_get_by_organism_name(organism_name: str, limit: int = default_limit,
                                                    select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -189,7 +188,7 @@ def register_protein_structure_tools(base_url: str, default_limit: int):
             return f"Error querying protein structure by organism name: {str(e)}"
 
 
-    @tool(name="bvbrc_protein_structure_get_by_title", description="Get protein structure data by title. Parameters: title (str) - title to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_protein_structure_get_by_title(title: str, limit: int = default_limit,
                                             select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -217,7 +216,7 @@ def register_protein_structure_tools(base_url: str, default_limit: int):
             return f"Error querying protein structure by title: {str(e)}"
 
 
-    @tool(name="bvbrc_protein_structure_get_by_resolution", description="Get protein structure data by resolution. Parameters: resolution (str) - resolution to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_protein_structure_get_by_resolution(resolution: str, limit: int = default_limit,
                                                  select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -245,7 +244,7 @@ def register_protein_structure_tools(base_url: str, default_limit: int):
             return f"Error querying protein structure by resolution: {str(e)}"
 
 
-    @tool(name="bvbrc_protein_structure_get_by_taxon_id", description="Get protein structure data by taxon ID. Parameters: taxon_id (int) - taxon ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_protein_structure_get_by_taxon_id(taxon_id: int, limit: int = default_limit,
                                                select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -273,7 +272,7 @@ def register_protein_structure_tools(base_url: str, default_limit: int):
             return f"Error querying protein structure by taxon ID: {str(e)}"
 
 
-    @tool(name="bvbrc_protein_structure_get_by_pmid", description="Get protein structure data by PMID. Parameters: pmid (str) - PMID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_protein_structure_get_by_pmid(pmid: str, limit: int = default_limit,
                                            select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -301,7 +300,7 @@ def register_protein_structure_tools(base_url: str, default_limit: int):
             return f"Error querying protein structure by PMID: {str(e)}"
 
 
-    @tool(name="bvbrc_protein_structure_get_by_release_date_range", description="Get protein structure data by release date range. Parameters: start_date (str) - start date in YYYY-MM-DD format; end_date (str) - end date in YYYY-MM-DD format; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_protein_structure_get_by_release_date_range(start_date: str, end_date: str, limit: int = default_limit,
                                                          select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -330,7 +329,7 @@ def register_protein_structure_tools(base_url: str, default_limit: int):
             return f"Error querying protein structure by release date range: {str(e)}"
 
 
-    @tool(name="bvbrc_protein_structure_search_by_keyword", description="Search protein structure data by keyword. Parameters: keyword (str) - keyword to search for; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_protein_structure_search_by_keyword(keyword: str, limit: int = default_limit,
                                                  select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -358,7 +357,7 @@ def register_protein_structure_tools(base_url: str, default_limit: int):
             return f"Error searching protein structure by keyword: {str(e)}"
 
 
-    @tool(name="bvbrc_protein_structure_get_all", description="Get all protein structure data. Parameters: limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_protein_structure_get_all(limit: int = default_limit,
                                        select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """

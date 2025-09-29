@@ -8,7 +8,6 @@ This module contains MCP tools for querying subsystem reference data from BV-BRC
 import json
 from typing import Optional
 
-from flaskmcp import tool
 from data_functions import (
     query_subsystem_ref_by_id,
     query_subsystem_ref_by_filters,
@@ -27,10 +26,10 @@ from data_functions import (
 )
 
 
-def register_subsystem_ref_tools(base_url: str, default_limit: int):
+def register_subsystem_ref_tools(mcp, base_url: str, default_limit: int):
     """Register all subsystem reference-related MCP tools with the Flask app."""
     
-    @tool(name="bvbrc_subsystem_ref_get_by_id", description="Get subsystem reference data by ID. Parameters: id (str) - ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_subsystem_ref_get_by_id(id: str, limit: int = default_limit,
                                       select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -58,7 +57,7 @@ def register_subsystem_ref_tools(base_url: str, default_limit: int):
             return f"Error querying subsystem reference by ID: {str(e)}"
 
 
-    @tool(name="bvbrc_subsystem_ref_query_by_filters", description="Query subsystem reference data by custom filters. Parameters: filters_json (str) - JSON string of filter criteria; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_subsystem_ref_query_by_filters(filters_json: str, limit: int = default_limit,
                                             select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -91,7 +90,7 @@ def register_subsystem_ref_tools(base_url: str, default_limit: int):
             return f"Error querying subsystem reference by filters: {str(e)}"
 
 
-    @tool(name="bvbrc_subsystem_ref_get_by_subsystem_name", description="Get subsystem reference data by subsystem name. Parameters: subsystem_name (str) - subsystem name to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_subsystem_ref_get_by_subsystem_name(subsystem_name: str, limit: int = default_limit,
                                                  select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -119,7 +118,7 @@ def register_subsystem_ref_tools(base_url: str, default_limit: int):
             return f"Error querying subsystem reference by subsystem name: {str(e)}"
 
 
-    @tool(name="bvbrc_subsystem_ref_get_by_role", description="Get subsystem reference data by role. Parameters: role (str) - role to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_subsystem_ref_get_by_role(role: str, limit: int = default_limit,
                                         select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -147,7 +146,7 @@ def register_subsystem_ref_tools(base_url: str, default_limit: int):
             return f"Error querying subsystem reference by role: {str(e)}"
 
 
-    @tool(name="bvbrc_subsystem_ref_get_by_class", description="Get subsystem reference data by class. Parameters: class_name (str) - class to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_subsystem_ref_get_by_class(class_name: str, limit: int = default_limit,
                                          select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -175,7 +174,7 @@ def register_subsystem_ref_tools(base_url: str, default_limit: int):
             return f"Error querying subsystem reference by class: {str(e)}"
 
 
-    @tool(name="bvbrc_subsystem_ref_get_by_superclass", description="Get subsystem reference data by superclass. Parameters: superclass (str) - superclass to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_subsystem_ref_get_by_superclass(superclass: str, limit: int = default_limit,
                                               select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -203,7 +202,7 @@ def register_subsystem_ref_tools(base_url: str, default_limit: int):
             return f"Error querying subsystem reference by superclass: {str(e)}"
 
 
-    @tool(name="bvbrc_subsystem_ref_get_by_date_inserted_range", description="Get subsystem reference data by date inserted range. Parameters: start_date (str) - start date in YYYY-MM-DD format; end_date (str) - end date in YYYY-MM-DD format; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_subsystem_ref_get_by_date_inserted_range(start_date: str, end_date: str, limit: int = default_limit,
                                                       select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -232,7 +231,7 @@ def register_subsystem_ref_tools(base_url: str, default_limit: int):
             return f"Error querying subsystem reference by date inserted range: {str(e)}"
 
 
-    @tool(name="bvbrc_subsystem_ref_search_by_keyword", description="Search subsystem reference data by keyword. Parameters: keyword (str) - keyword to search for; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_subsystem_ref_search_by_keyword(keyword: str, limit: int = default_limit,
                                               select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -260,7 +259,7 @@ def register_subsystem_ref_tools(base_url: str, default_limit: int):
             return f"Error searching subsystem reference by keyword: {str(e)}"
 
 
-    @tool(name="bvbrc_subsystem_ref_get_all", description="Get all subsystem reference data. Parameters: limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_subsystem_ref_get_all(limit: int = default_limit,
                                     select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """

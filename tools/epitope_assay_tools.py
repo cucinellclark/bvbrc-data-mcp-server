@@ -8,7 +8,6 @@ This module contains MCP tools for querying epitope assay data from BV-BRC.
 import json
 from typing import Optional
 
-from flaskmcp import tool
 from data_functions import (
     query_epitope_assay_by_id,
     query_epitope_assay_by_filters,
@@ -47,10 +46,10 @@ from data_functions import (
 )
 
 
-def register_epitope_assay_tools(base_url: str, default_limit: int):
-    """Register all epitope assay-related MCP tools with the Flask app."""
+def register_epitope_assay_tools(mcp, base_url: str, default_limit: int):
+    """Register all epitope assay-related MCP tools with the FastMCP server."""
     
-    @tool(name="bvbrc_epitope_assay_get_by_id", description="Get epitope assay data by assay ID. Parameters: assay_id (str) - assay ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_epitope_assay_get_by_id(assay_id: str, limit: int = default_limit,
                                      select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -78,7 +77,7 @@ def register_epitope_assay_tools(base_url: str, default_limit: int):
             return f"Error querying epitope assay by ID: {str(e)}"
 
 
-    @tool(name="bvbrc_epitope_assay_query_by_filters", description="Query epitope assay data by custom filters. Parameters: filters_json (str) - JSON string of filter criteria; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_epitope_assay_query_by_filters(filters_json: str, limit: int = default_limit,
                                             select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -111,7 +110,7 @@ def register_epitope_assay_tools(base_url: str, default_limit: int):
             return f"Error querying epitope assay by filters: {str(e)}"
 
 
-    @tool(name="bvbrc_epitope_assay_get_by_assay_group", description="Get epitope assay data by assay group. Parameters: assay_group (str) - assay group to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_epitope_assay_get_by_assay_group(assay_group: str, limit: int = default_limit,
                                               select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -139,7 +138,7 @@ def register_epitope_assay_tools(base_url: str, default_limit: int):
             return f"Error querying epitope assay by assay group: {str(e)}"
 
 
-    @tool(name="bvbrc_epitope_assay_get_by_assay_measurement", description="Get epitope assay data by assay measurement. Parameters: assay_measurement (str) - assay measurement to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_epitope_assay_get_by_assay_measurement(assay_measurement: str, limit: int = default_limit,
                                                    select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -167,7 +166,7 @@ def register_epitope_assay_tools(base_url: str, default_limit: int):
             return f"Error querying epitope assay by assay measurement: {str(e)}"
 
 
-    @tool(name="bvbrc_epitope_assay_get_by_assay_method", description="Get epitope assay data by assay method. Parameters: assay_method (str) - assay method to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_epitope_assay_get_by_assay_method(assay_method: str, limit: int = default_limit,
                                               select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -195,7 +194,7 @@ def register_epitope_assay_tools(base_url: str, default_limit: int):
             return f"Error querying epitope assay by assay method: {str(e)}"
 
 
-    @tool(name="bvbrc_epitope_assay_get_by_assay_result", description="Get epitope assay data by assay result. Parameters: assay_result (str) - assay result to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_epitope_assay_get_by_assay_result(assay_result: str, limit: int = default_limit,
                                               select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -223,7 +222,7 @@ def register_epitope_assay_tools(base_url: str, default_limit: int):
             return f"Error querying epitope assay by assay result: {str(e)}"
 
 
-    @tool(name="bvbrc_epitope_assay_get_by_assay_type", description="Get epitope assay data by assay type. Parameters: assay_type (str) - assay type to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_epitope_assay_get_by_assay_type(assay_type: str, limit: int = default_limit,
                                              select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -251,7 +250,7 @@ def register_epitope_assay_tools(base_url: str, default_limit: int):
             return f"Error querying epitope assay by assay type: {str(e)}"
 
 
-    @tool(name="bvbrc_epitope_assay_get_by_epitope_id", description="Get epitope assay data by epitope ID. Parameters: epitope_id (str) - epitope ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_epitope_assay_get_by_epitope_id(epitope_id: str, limit: int = default_limit,
                                             select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -279,7 +278,7 @@ def register_epitope_assay_tools(base_url: str, default_limit: int):
             return f"Error querying epitope assay by epitope ID: {str(e)}"
 
 
-    @tool(name="bvbrc_epitope_assay_get_by_epitope_sequence", description="Get epitope assay data by epitope sequence. Parameters: epitope_sequence (str) - epitope sequence to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_epitope_assay_get_by_epitope_sequence(epitope_sequence: str, limit: int = default_limit,
                                                    select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -307,7 +306,7 @@ def register_epitope_assay_tools(base_url: str, default_limit: int):
             return f"Error querying epitope assay by epitope sequence: {str(e)}"
 
 
-    @tool(name="bvbrc_epitope_assay_get_by_organism", description="Get epitope assay data by organism. Parameters: organism (str) - organism to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_epitope_assay_get_by_organism(organism: str, limit: int = default_limit,
                                            select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -335,7 +334,7 @@ def register_epitope_assay_tools(base_url: str, default_limit: int):
             return f"Error querying epitope assay by organism: {str(e)}"
 
 
-    @tool(name="bvbrc_epitope_assay_get_by_pmid", description="Get epitope assay data by PMID. Parameters: pmid (str) - PMID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_epitope_assay_get_by_pmid(pmid: str, limit: int = default_limit,
                                         select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -363,7 +362,7 @@ def register_epitope_assay_tools(base_url: str, default_limit: int):
             return f"Error querying epitope assay by PMID: {str(e)}"
 
 
-    @tool(name="bvbrc_epitope_assay_get_by_protein_accession", description="Get epitope assay data by protein accession. Parameters: protein_accession (str) - protein accession to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_epitope_assay_get_by_protein_accession(protein_accession: str, limit: int = default_limit,
                                                     select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -391,7 +390,7 @@ def register_epitope_assay_tools(base_url: str, default_limit: int):
             return f"Error querying epitope assay by protein accession: {str(e)}"
 
 
-    @tool(name="bvbrc_epitope_assay_get_by_position_range", description="Get epitope assay data by position range. Parameters: min_start (int) - minimum start position; max_end (int) - maximum end position; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_epitope_assay_get_by_position_range(min_start: int, max_end: int, limit: int = default_limit,
                                                  select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -420,7 +419,7 @@ def register_epitope_assay_tools(base_url: str, default_limit: int):
             return f"Error querying epitope assay by position range: {str(e)}"
 
 
-    @tool(name="bvbrc_epitope_assay_get_by_date_inserted_range", description="Get epitope assay data by date inserted range. Parameters: start_date (str) - start date in YYYY-MM-DD format; end_date (str) - end date in YYYY-MM-DD format; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_epitope_assay_get_by_date_inserted_range(start_date: str, end_date: str, limit: int = default_limit,
                                                      select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -449,7 +448,7 @@ def register_epitope_assay_tools(base_url: str, default_limit: int):
             return f"Error querying epitope assay by date inserted range: {str(e)}"
 
 
-    @tool(name="bvbrc_epitope_assay_search_by_keyword", description="Search epitope assay data by keyword. Parameters: keyword (str) - keyword to search for; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_epitope_assay_search_by_keyword(keyword: str, limit: int = default_limit,
                                              select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -477,7 +476,7 @@ def register_epitope_assay_tools(base_url: str, default_limit: int):
             return f"Error searching epitope assay by keyword: {str(e)}"
 
 
-    @tool(name="bvbrc_epitope_assay_get_all", description="Get all epitope assay data. Parameters: limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_epitope_assay_get_all(limit: int = default_limit,
                                    select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """

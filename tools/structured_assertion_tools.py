@@ -8,7 +8,6 @@ This module contains MCP tools for querying structured assertion data from BV-BR
 import json
 from typing import Optional
 
-from flaskmcp import tool
 from data_functions import (
     query_structured_assertion_by_id,
     query_structured_assertion_by_filters,
@@ -35,10 +34,10 @@ from data_functions import (
 )
 
 
-def register_structured_assertion_tools(base_url: str, default_limit: int):
-    """Register all structured assertion-related MCP tools with the Flask app."""
+def register_structured_assertion_tools(mcp, base_url: str, default_limit: int):
+    """Register all structured assertion-related MCP tools with the FastMCP server."""
     
-    @tool(name="bvbrc_structured_assertion_get_by_id", description="Get structured assertion data by ID. Parameters: id (str) - ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_structured_assertion_get_by_id(id: str, limit: int = default_limit,
                                              select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -66,7 +65,7 @@ def register_structured_assertion_tools(base_url: str, default_limit: int):
             return f"Error querying structured assertion by ID: {str(e)}"
 
 
-    @tool(name="bvbrc_structured_assertion_query_by_filters", description="Query structured assertion data by custom filters. Parameters: filters_json (str) - JSON string of filter criteria; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_structured_assertion_query_by_filters(filters_json: str, limit: int = default_limit,
                                                     select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -99,7 +98,7 @@ def register_structured_assertion_tools(base_url: str, default_limit: int):
             return f"Error querying structured assertion by filters: {str(e)}"
 
 
-    @tool(name="bvbrc_structured_assertion_get_by_feature_id", description="Get structured assertion data by feature ID. Parameters: feature_id (str) - feature ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_structured_assertion_get_by_feature_id(feature_id: str, limit: int = default_limit,
                                                     select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -127,7 +126,7 @@ def register_structured_assertion_tools(base_url: str, default_limit: int):
             return f"Error querying structured assertion by feature ID: {str(e)}"
 
 
-    @tool(name="bvbrc_structured_assertion_get_by_patric_id", description="Get structured assertion data by PATRIC ID. Parameters: patric_id (str) - PATRIC ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_structured_assertion_get_by_patric_id(patric_id: str, limit: int = default_limit,
                                                    select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -155,7 +154,7 @@ def register_structured_assertion_tools(base_url: str, default_limit: int):
             return f"Error querying structured assertion by PATRIC ID: {str(e)}"
 
 
-    @tool(name="bvbrc_structured_assertion_get_by_property", description="Get structured assertion data by property. Parameters: property (str) - property to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_structured_assertion_get_by_property(property: str, limit: int = default_limit,
                                                  select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -183,7 +182,7 @@ def register_structured_assertion_tools(base_url: str, default_limit: int):
             return f"Error querying structured assertion by property: {str(e)}"
 
 
-    @tool(name="bvbrc_structured_assertion_get_by_evidence_code", description="Get structured assertion data by evidence code. Parameters: evidence_code (str) - evidence code to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_structured_assertion_get_by_evidence_code(evidence_code: str, limit: int = default_limit,
                                                        select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -211,7 +210,7 @@ def register_structured_assertion_tools(base_url: str, default_limit: int):
             return f"Error querying structured assertion by evidence code: {str(e)}"
 
 
-    @tool(name="bvbrc_structured_assertion_get_by_date_inserted_range", description="Get structured assertion data by date inserted range. Parameters: start_date (str) - start date in YYYY-MM-DD format; end_date (str) - end date in YYYY-MM-DD format; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_structured_assertion_get_by_date_inserted_range(start_date: str, end_date: str, limit: int = default_limit,
                                                              select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -240,7 +239,7 @@ def register_structured_assertion_tools(base_url: str, default_limit: int):
             return f"Error querying structured assertion by date inserted range: {str(e)}"
 
 
-    @tool(name="bvbrc_structured_assertion_search_by_keyword", description="Search structured assertion data by keyword. Parameters: keyword (str) - keyword to search for; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_structured_assertion_search_by_keyword(keyword: str, limit: int = default_limit,
                                                     select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -268,7 +267,7 @@ def register_structured_assertion_tools(base_url: str, default_limit: int):
             return f"Error searching structured assertion by keyword: {str(e)}"
 
 
-    @tool(name="bvbrc_structured_assertion_get_all", description="Get all structured assertion data. Parameters: limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_structured_assertion_get_all(limit: int = default_limit,
                                           select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """

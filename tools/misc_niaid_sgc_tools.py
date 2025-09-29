@@ -8,7 +8,6 @@ This module contains MCP tools for querying miscellaneous NIAID SGC data from BV
 import json
 from typing import Optional
 
-from flaskmcp import tool
 from data_functions import (
     query_misc_niaid_sgc_by_id,
     query_misc_niaid_sgc_by_filters,
@@ -23,10 +22,10 @@ from data_functions import (
 )
 
 
-def register_misc_niaid_sgc_tools(base_url: str, default_limit: int):
+def register_misc_niaid_sgc_tools(mcp, base_url: str, default_limit: int):
     """Register all miscellaneous NIAID SGC-related MCP tools with the Flask app."""
     
-    @tool(name="bvbrc_misc_niaid_sgc_get_by_id", description="Get miscellaneous NIAID SGC data by target ID. Parameters: target_id (str) - target ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_misc_niaid_sgc_get_by_id(target_id: str, limit: int = default_limit,
                                        select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -54,7 +53,7 @@ def register_misc_niaid_sgc_tools(base_url: str, default_limit: int):
             return f"Error querying miscellaneous NIAID SGC by target ID: {str(e)}"
 
 
-    @tool(name="bvbrc_misc_niaid_sgc_query_by_filters", description="Query miscellaneous NIAID SGC data by custom filters. Parameters: filters_json (str) - JSON string of filter criteria; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_misc_niaid_sgc_query_by_filters(filters_json: str, limit: int = default_limit,
                                              select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -87,7 +86,7 @@ def register_misc_niaid_sgc_tools(base_url: str, default_limit: int):
             return f"Error querying miscellaneous NIAID SGC by filters: {str(e)}"
 
 
-    @tool(name="bvbrc_misc_niaid_sgc_get_by_genus", description="Get miscellaneous NIAID SGC data by genus. Parameters: genus (str) - genus to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_misc_niaid_sgc_get_by_genus(genus: str, limit: int = default_limit,
                                           select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -115,7 +114,7 @@ def register_misc_niaid_sgc_tools(base_url: str, default_limit: int):
             return f"Error querying miscellaneous NIAID SGC by genus: {str(e)}"
 
 
-    @tool(name="bvbrc_misc_niaid_sgc_get_by_species", description="Get miscellaneous NIAID SGC data by species. Parameters: species (str) - species to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_misc_niaid_sgc_get_by_species(species: str, limit: int = default_limit,
                                             select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -143,7 +142,7 @@ def register_misc_niaid_sgc_tools(base_url: str, default_limit: int):
             return f"Error querying miscellaneous NIAID SGC by species: {str(e)}"
 
 
-    @tool(name="bvbrc_misc_niaid_sgc_get_by_taxon_id", description="Get miscellaneous NIAID SGC data by taxon ID. Parameters: taxon_id (int) - taxon ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_misc_niaid_sgc_get_by_taxon_id(taxon_id: int, limit: int = default_limit,
                                              select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -171,7 +170,7 @@ def register_misc_niaid_sgc_tools(base_url: str, default_limit: int):
             return f"Error querying miscellaneous NIAID SGC by taxon ID: {str(e)}"
 
 
-    @tool(name="bvbrc_misc_niaid_sgc_get_by_date_inserted_range", description="Get miscellaneous NIAID SGC data by date inserted range. Parameters: start_date (str) - start date in YYYY-MM-DD format; end_date (str) - end date in YYYY-MM-DD format; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_misc_niaid_sgc_get_by_date_inserted_range(start_date: str, end_date: str, limit: int = default_limit,
                                                        select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -200,7 +199,7 @@ def register_misc_niaid_sgc_tools(base_url: str, default_limit: int):
             return f"Error querying miscellaneous NIAID SGC by date inserted range: {str(e)}"
 
 
-    @tool(name="bvbrc_misc_niaid_sgc_get_by_date_modified_range", description="Get miscellaneous NIAID SGC data by date modified range. Parameters: start_date (str) - start date in YYYY-MM-DD format; end_date (str) - end date in YYYY-MM-DD format; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_misc_niaid_sgc_get_by_date_modified_range(start_date: str, end_date: str, limit: int = default_limit,
                                                         select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -229,7 +228,7 @@ def register_misc_niaid_sgc_tools(base_url: str, default_limit: int):
             return f"Error querying miscellaneous NIAID SGC by date modified range: {str(e)}"
 
 
-    @tool(name="bvbrc_misc_niaid_sgc_search_by_keyword", description="Search miscellaneous NIAID SGC data by keyword. Parameters: keyword (str) - keyword to search for; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_misc_niaid_sgc_search_by_keyword(keyword: str, limit: int = default_limit,
                                                select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -257,7 +256,7 @@ def register_misc_niaid_sgc_tools(base_url: str, default_limit: int):
             return f"Error searching miscellaneous NIAID SGC by keyword: {str(e)}"
 
 
-    @tool(name="bvbrc_misc_niaid_sgc_get_all", description="Get all miscellaneous NIAID SGC data. Parameters: limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_misc_niaid_sgc_get_all(limit: int = default_limit,
                                      select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """

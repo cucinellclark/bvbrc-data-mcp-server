@@ -8,7 +8,6 @@ This module contains MCP tools for querying subsystem data from BV-BRC.
 import json
 from typing import Optional
 
-from flaskmcp import tool
 from data_functions import (
     query_subsystem_by_id,
     query_subsystem_by_filters,
@@ -40,10 +39,10 @@ from data_functions import (
 )
 
 
-def register_subsystem_tools(base_url: str, default_limit: int):
-    """Register all subsystem-related MCP tools with the Flask app."""
+def register_subsystem_tools(mcp, base_url: str, default_limit: int):
+    """Register all subsystem-related MCP tools with the FastMCP server."""
     
-    @tool(name="bvbrc_subsystem_get_by_id", description="Get subsystem data by ID. Parameters: id (str) - ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_subsystem_get_by_id(id: str, limit: int = default_limit,
                                    select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -71,7 +70,7 @@ def register_subsystem_tools(base_url: str, default_limit: int):
             return f"Error querying subsystem by ID: {str(e)}"
 
 
-    @tool(name="bvbrc_subsystem_query_by_filters", description="Query subsystem data by custom filters. Parameters: filters_json (str) - JSON string of filter criteria; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_subsystem_query_by_filters(filters_json: str, limit: int = default_limit,
                                          select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -104,7 +103,7 @@ def register_subsystem_tools(base_url: str, default_limit: int):
             return f"Error querying subsystem by filters: {str(e)}"
 
 
-    @tool(name="bvbrc_subsystem_get_by_subsystem_name", description="Get subsystem data by subsystem name. Parameters: subsystem_name (str) - subsystem name to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_subsystem_get_by_subsystem_name(subsystem_name: str, limit: int = default_limit,
                                              select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -132,7 +131,7 @@ def register_subsystem_tools(base_url: str, default_limit: int):
             return f"Error querying subsystem by subsystem name: {str(e)}"
 
 
-    @tool(name="bvbrc_subsystem_get_by_genome_id", description="Get subsystem data by genome ID. Parameters: genome_id (str) - genome ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_subsystem_get_by_genome_id(genome_id: str, limit: int = default_limit,
                                          select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -160,7 +159,7 @@ def register_subsystem_tools(base_url: str, default_limit: int):
             return f"Error querying subsystem by genome ID: {str(e)}"
 
 
-    @tool(name="bvbrc_subsystem_get_by_gene", description="Get subsystem data by gene. Parameters: gene (str) - gene to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_subsystem_get_by_gene(gene: str, limit: int = default_limit,
                                     select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -188,7 +187,7 @@ def register_subsystem_tools(base_url: str, default_limit: int):
             return f"Error querying subsystem by gene: {str(e)}"
 
 
-    @tool(name="bvbrc_subsystem_get_by_role_name", description="Get subsystem data by role name. Parameters: role_name (str) - role name to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_subsystem_get_by_role_name(role_name: str, limit: int = default_limit,
                                          select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -216,7 +215,7 @@ def register_subsystem_tools(base_url: str, default_limit: int):
             return f"Error querying subsystem by role name: {str(e)}"
 
 
-    @tool(name="bvbrc_subsystem_get_by_class", description="Get subsystem data by class. Parameters: class_name (str) - class to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_subsystem_get_by_class(class_name: str, limit: int = default_limit,
                                     select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -244,7 +243,7 @@ def register_subsystem_tools(base_url: str, default_limit: int):
             return f"Error querying subsystem by class: {str(e)}"
 
 
-    @tool(name="bvbrc_subsystem_get_by_superclass", description="Get subsystem data by superclass. Parameters: superclass (str) - superclass to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_subsystem_get_by_superclass(superclass: str, limit: int = default_limit,
                                          select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -272,7 +271,7 @@ def register_subsystem_tools(base_url: str, default_limit: int):
             return f"Error querying subsystem by superclass: {str(e)}"
 
 
-    @tool(name="bvbrc_subsystem_get_by_date_inserted_range", description="Get subsystem data by date inserted range. Parameters: start_date (str) - start date in YYYY-MM-DD format; end_date (str) - end date in YYYY-MM-DD format; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_subsystem_get_by_date_inserted_range(start_date: str, end_date: str, limit: int = default_limit,
                                                    select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -301,7 +300,7 @@ def register_subsystem_tools(base_url: str, default_limit: int):
             return f"Error querying subsystem by date inserted range: {str(e)}"
 
 
-    @tool(name="bvbrc_subsystem_search_by_keyword", description="Search subsystem data by keyword. Parameters: keyword (str) - keyword to search for; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_subsystem_search_by_keyword(keyword: str, limit: int = default_limit,
                                           select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -329,7 +328,7 @@ def register_subsystem_tools(base_url: str, default_limit: int):
             return f"Error searching subsystem by keyword: {str(e)}"
 
 
-    @tool(name="bvbrc_subsystem_get_all", description="Get all subsystem data. Parameters: limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_subsystem_get_all(limit: int = default_limit,
                                 select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """

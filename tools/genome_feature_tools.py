@@ -8,7 +8,6 @@ This module contains MCP tools for querying genome feature data from BV-BRC.
 import json
 from typing import Optional
 
-from flaskmcp import tool
 from data_functions import (
     query_genome_feature_by_id,
     query_genome_feature_by_genome_id,
@@ -19,10 +18,10 @@ from data_functions import (
 )
 
 
-def register_genome_feature_tools(base_url: str, default_limit: int):
-    """Register all genome feature-related MCP tools with the Flask app."""
+def register_genome_feature_tools(mcp, base_url: str, default_limit: int):
+    """Register all genome feature-related MCP tools with the FastMCP server."""
     
-    @tool(name="bvbrc_genome_feature_get_by_id", description="Get genome feature data by feature ID. Parameters: feature_id (str) - feature ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_genome_feature_get_by_id(feature_id: str, limit: int = default_limit,
                                       select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -50,7 +49,7 @@ def register_genome_feature_tools(base_url: str, default_limit: int):
             return f"Error querying genome feature by ID: {str(e)}"
 
 
-    @tool(name="bvbrc_genome_feature_get_by_genome_id", description="Get genome feature data by genome ID. Parameters: genome_id (str) - genome ID to query features for (e.g., '208964.12'); limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_genome_feature_get_by_genome_id(genome_id: str, limit: int = default_limit,
                                              select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -78,7 +77,7 @@ def register_genome_feature_tools(base_url: str, default_limit: int):
             return f"Error querying genome features by genome ID: {str(e)}"
 
 
-    @tool(name="bvbrc_genome_feature_get_by_gene", description="Get genome feature data by gene name. Parameters: gene_name (str) - gene name to query (e.g., 'lacZ'); limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_genome_feature_get_by_gene(gene_name: str, limit: int = default_limit,
                                         select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -106,7 +105,7 @@ def register_genome_feature_tools(base_url: str, default_limit: int):
             return f"Error querying genome features by gene: {str(e)}"
 
 
-    @tool(name="bvbrc_genome_feature_get_by_product", description="Get genome feature data by product name. Parameters: product_name (str) - product name to query (e.g., 'beta-galactosidase'); limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_genome_feature_get_by_product(product_name: str, limit: int = default_limit,
                                            select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -134,7 +133,7 @@ def register_genome_feature_tools(base_url: str, default_limit: int):
             return f"Error querying genome features by product: {str(e)}"
 
 
-    @tool(name="bvbrc_genome_feature_query_by_filters", description="Query genome feature data by custom filters. Parameters: filters_json (str) - JSON string of filter criteria (e.g., '{\"genome_id\": \"208964.12\", \"feature_type\": \"CDS\"}'); limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_genome_feature_query_by_filters(filters_json: str, limit: int = default_limit,
                                              select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """

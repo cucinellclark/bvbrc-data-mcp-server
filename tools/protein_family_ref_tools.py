@@ -8,7 +8,6 @@ This module contains MCP tools for querying protein family reference data from B
 import json
 from typing import Optional
 
-from flaskmcp import tool
 from data_functions import (
     query_protein_family_ref_by_id,
     query_protein_family_ref_by_filters,
@@ -22,10 +21,10 @@ from data_functions import (
 )
 
 
-def register_protein_family_ref_tools(base_url: str, default_limit: int):
+def register_protein_family_ref_tools(mcp, base_url: str, default_limit: int):
     """Register all protein family reference-related MCP tools with the Flask app."""
     
-    @tool(name="bvbrc_protein_family_ref_get_by_id", description="Get protein family reference data by family ID. Parameters: family_id (str) - family ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_protein_family_ref_get_by_id(family_id: str, limit: int = default_limit,
                                           select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -53,7 +52,7 @@ def register_protein_family_ref_tools(base_url: str, default_limit: int):
             return f"Error querying protein family reference by family ID: {str(e)}"
 
 
-    @tool(name="bvbrc_protein_family_ref_query_by_filters", description="Query protein family reference data by custom filters. Parameters: filters_json (str) - JSON string of filter criteria; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_protein_family_ref_query_by_filters(filters_json: str, limit: int = default_limit,
                                                 select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -86,7 +85,7 @@ def register_protein_family_ref_tools(base_url: str, default_limit: int):
             return f"Error querying protein family reference by filters: {str(e)}"
 
 
-    @tool(name="bvbrc_protein_family_ref_get_by_family_product", description="Get protein family reference data by family product. Parameters: family_product (str) - family product to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_protein_family_ref_get_by_family_product(family_product: str, limit: int = default_limit,
                                                       select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -114,7 +113,7 @@ def register_protein_family_ref_tools(base_url: str, default_limit: int):
             return f"Error querying protein family reference by family product: {str(e)}"
 
 
-    @tool(name="bvbrc_protein_family_ref_get_by_family_type", description="Get protein family reference data by family type. Parameters: family_type (str) - family type to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_protein_family_ref_get_by_family_type(family_type: str, limit: int = default_limit,
                                                    select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -142,7 +141,7 @@ def register_protein_family_ref_tools(base_url: str, default_limit: int):
             return f"Error querying protein family reference by family type: {str(e)}"
 
 
-    @tool(name="bvbrc_protein_family_ref_get_by_date_inserted_range", description="Get protein family reference data by date inserted range. Parameters: start_date (str) - start date in YYYY-MM-DD format; end_date (str) - end date in YYYY-MM-DD format; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_protein_family_ref_get_by_date_inserted_range(start_date: str, end_date: str, limit: int = default_limit,
                                                            select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -171,7 +170,7 @@ def register_protein_family_ref_tools(base_url: str, default_limit: int):
             return f"Error querying protein family reference by date inserted range: {str(e)}"
 
 
-    @tool(name="bvbrc_protein_family_ref_get_by_date_modified_range", description="Get protein family reference data by date modified range. Parameters: start_date (str) - start date in YYYY-MM-DD format; end_date (str) - end date in YYYY-MM-DD format; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_protein_family_ref_get_by_date_modified_range(start_date: str, end_date: str, limit: int = default_limit,
                                                            select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -200,7 +199,7 @@ def register_protein_family_ref_tools(base_url: str, default_limit: int):
             return f"Error querying protein family reference by date modified range: {str(e)}"
 
 
-    @tool(name="bvbrc_protein_family_ref_search_by_keyword", description="Search protein family reference data by keyword. Parameters: keyword (str) - keyword to search for; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_protein_family_ref_search_by_keyword(keyword: str, limit: int = default_limit,
                                                   select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -228,7 +227,7 @@ def register_protein_family_ref_tools(base_url: str, default_limit: int):
             return f"Error searching protein family reference by keyword: {str(e)}"
 
 
-    @tool(name="bvbrc_protein_family_ref_get_all", description="Get all protein family reference data. Parameters: limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_protein_family_ref_get_all(limit: int = default_limit,
                                         select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """

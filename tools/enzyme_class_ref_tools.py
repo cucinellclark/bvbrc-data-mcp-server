@@ -8,7 +8,6 @@ This module contains MCP tools for querying enzyme class reference data from BV-
 import json
 from typing import Optional
 
-from flaskmcp import tool
 from data_functions import (
     query_enzyme_class_ref_by_ec_number,
     query_enzyme_class_ref_by_filters,
@@ -23,10 +22,10 @@ from data_functions import (
 )
 
 
-def register_enzyme_class_ref_tools(base_url: str, default_limit: int):
+def register_enzyme_class_ref_tools(mcp, base_url: str, default_limit: int):
     """Register all enzyme class reference-related MCP tools with the Flask app."""
     
-    @tool(name="bvbrc_enzyme_class_ref_get_by_ec_number", description="Get enzyme class reference data by EC number. Parameters: ec_number (str) - EC number to query (e.g., '1.1.1.1'); limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_enzyme_class_ref_get_by_ec_number(ec_number: str, limit: int = default_limit,
                                                select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -54,7 +53,7 @@ def register_enzyme_class_ref_tools(base_url: str, default_limit: int):
             return f"Error querying enzyme class reference by EC number: {str(e)}"
 
 
-    @tool(name="bvbrc_enzyme_class_ref_query_by_filters", description="Query enzyme class reference data by custom filters. Parameters: filters_json (str) - JSON string of filter criteria (e.g., '{\"ec_description\": \"alcohol dehydrogenase\", \"go\": \"GO:0004024\"}'); limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_enzyme_class_ref_query_by_filters(filters_json: str, limit: int = default_limit,
                                                select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -87,7 +86,7 @@ def register_enzyme_class_ref_tools(base_url: str, default_limit: int):
             return f"Error querying enzyme class reference by filters: {str(e)}"
 
 
-    @tool(name="bvbrc_enzyme_class_ref_get_by_ec_description", description="Get enzyme class reference data by EC description. Parameters: ec_description (str) - EC description to query (e.g., 'alcohol dehydrogenase'); limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_enzyme_class_ref_get_by_ec_description(ec_description: str, limit: int = default_limit,
                                                     select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -115,7 +114,7 @@ def register_enzyme_class_ref_tools(base_url: str, default_limit: int):
             return f"Error querying enzyme class reference by EC description: {str(e)}"
 
 
-    @tool(name="bvbrc_enzyme_class_ref_get_by_go_term", description="Get enzyme class reference data by GO term. Parameters: go_term (str) - GO term to query (e.g., 'GO:0004024'); limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_enzyme_class_ref_get_by_go_term(go_term: str, limit: int = default_limit,
                                              select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -143,7 +142,7 @@ def register_enzyme_class_ref_tools(base_url: str, default_limit: int):
             return f"Error querying enzyme class reference by GO term: {str(e)}"
 
 
-    @tool(name="bvbrc_enzyme_class_ref_get_by_version", description="Get enzyme class reference data by version. Parameters: version (int) - version number to query (e.g., 1); limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_enzyme_class_ref_get_by_version(version: int, limit: int = default_limit,
                                              select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -171,7 +170,7 @@ def register_enzyme_class_ref_tools(base_url: str, default_limit: int):
             return f"Error querying enzyme class reference by version: {str(e)}"
 
 
-    @tool(name="bvbrc_enzyme_class_ref_get_by_date_inserted_range", description="Get enzyme class reference data by date inserted range. Parameters: start_date (str) - start date in YYYY-MM-DD format; end_date (str) - end date in YYYY-MM-DD format; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_enzyme_class_ref_get_by_date_inserted_range(start_date: str, end_date: str, limit: int = default_limit,
                                                          select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -200,7 +199,7 @@ def register_enzyme_class_ref_tools(base_url: str, default_limit: int):
             return f"Error querying enzyme class reference by date inserted range: {str(e)}"
 
 
-    @tool(name="bvbrc_enzyme_class_ref_get_by_date_modified_range", description="Get enzyme class reference data by date modified range. Parameters: start_date (str) - start date in YYYY-MM-DD format; end_date (str) - end date in YYYY-MM-DD format; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_enzyme_class_ref_get_by_date_modified_range(start_date: str, end_date: str, limit: int = default_limit,
                                                           select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -229,7 +228,7 @@ def register_enzyme_class_ref_tools(base_url: str, default_limit: int):
             return f"Error querying enzyme class reference by date modified range: {str(e)}"
 
 
-    @tool(name="bvbrc_enzyme_class_ref_search_by_keyword", description="Search enzyme class reference data by keyword. Parameters: keyword (str) - keyword to search for (e.g., 'dehydrogenase'); limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_enzyme_class_ref_search_by_keyword(keyword: str, limit: int = default_limit,
                                                 select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
@@ -257,7 +256,7 @@ def register_enzyme_class_ref_tools(base_url: str, default_limit: int):
             return f"Error searching enzyme class reference by keyword: {str(e)}"
 
 
-    @tool(name="bvbrc_enzyme_class_ref_get_all", description="Get all enzyme class reference data. Parameters: limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_enzyme_class_ref_get_all(limit: int = default_limit,
                                       select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
