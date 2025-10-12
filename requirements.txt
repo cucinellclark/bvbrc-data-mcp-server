@@ -1,7 +1,4 @@
-# Core MCP and Flask dependencies
-flaskmcp==0.1.2
-Flask==3.1.2
-Werkzeug==3.1.1
+# Core MCP dependencies
 
 # HTTP client for API calls
 httpx==0.28.1
