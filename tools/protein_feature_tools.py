@@ -8,7 +8,11 @@ This module contains MCP tools for querying protein feature data from BV-BRC.
 import json
 from typing import Optional
 
-from flaskmcp import tool
+from fastmcp import FastMCP
+# Global variables to store configuration
+_base_url = None
+_default_limit = None
+
 from data_functions import (
     query_protein_feature_by_id,
     query_protein_feature_by_filters,
@@ -49,11 +53,16 @@ from data_functions import (
 )
 
 
-def register_protein_feature_tools(base_url: str, default_limit: int):
+def register_protein_feature_tools(mcp: FastMCP, base_url: str, default_limit: int):
     """Register all protein feature-related MCP tools with the Flask app."""
+    global _base_url, _default_limit
+    _base_url = base_url
+    _default_limit = default_limit
     
-    @tool(name="bvbrc_protein_feature_get_by_id", description="Get protein feature data by ID. Parameters: id (str) - ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_protein_feature_get_by_id(id: str, limit: int = default_limit,
+
+    
+    @mcp.tool()
+    def bvbrc_protein_feature_get_by_id(id: str, limit: int = _default_limit,
                                         select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get protein feature data by ID.
@@ -74,14 +83,14 @@ def register_protein_feature_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_protein_feature_by_id(id, options, base_url)
+            result = query_protein_feature_by_id(id, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying protein feature by ID: {str(e)}"
 
 
-    @tool(name="bvbrc_protein_feature_query_by_filters", description="Query protein feature data by custom filters. Parameters: filters_json (str) - JSON string of filter criteria; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_protein_feature_query_by_filters(filters_json: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_protein_feature_query_by_filters(filters_json: str, limit: int = _default_limit,
                                              select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Query protein feature data by custom filters.
@@ -107,14 +116,14 @@ def register_protein_feature_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_protein_feature_by_filters(filters, options, base_url)
+            result = query_protein_feature_by_filters(filters, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying protein feature by filters: {str(e)}"
 
 
-    @tool(name="bvbrc_protein_feature_get_by_genome_id", description="Get protein feature data by genome ID. Parameters: genome_id (str) - genome ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_protein_feature_get_by_genome_id(genome_id: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_protein_feature_get_by_genome_id(genome_id: str, limit: int = _default_limit,
                                               select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get protein feature data by genome ID.
@@ -135,14 +144,14 @@ def register_protein_feature_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_protein_feature_by_genome_id(genome_id, options, base_url)
+            result = query_protein_feature_by_genome_id(genome_id, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying protein feature by genome ID: {str(e)}"
 
 
-    @tool(name="bvbrc_protein_feature_get_by_genome_name", description="Get protein feature data by genome name. Parameters: genome_name (str) - genome name to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_protein_feature_get_by_genome_name(genome_name: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_protein_feature_get_by_genome_name(genome_name: str, limit: int = _default_limit,
                                                 select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get protein feature data by genome name.
@@ -163,14 +172,14 @@ def register_protein_feature_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_protein_feature_by_genome_name(genome_name, options, base_url)
+            result = query_protein_feature_by_genome_name(genome_name, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying protein feature by genome name: {str(e)}"
 
 
-    @tool(name="bvbrc_protein_feature_get_by_feature_id", description="Get protein feature data by feature ID. Parameters: feature_id (str) - feature ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_protein_feature_get_by_feature_id(feature_id: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_protein_feature_get_by_feature_id(feature_id: str, limit: int = _default_limit,
                                                select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get protein feature data by feature ID.
@@ -191,14 +200,14 @@ def register_protein_feature_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_protein_feature_by_feature_id(feature_id, options, base_url)
+            result = query_protein_feature_by_feature_id(feature_id, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying protein feature by feature ID: {str(e)}"
 
 
-    @tool(name="bvbrc_protein_feature_get_by_gene", description="Get protein feature data by gene. Parameters: gene (str) - gene to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_protein_feature_get_by_gene(gene: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_protein_feature_get_by_gene(gene: str, limit: int = _default_limit,
                                          select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get protein feature data by gene.
@@ -219,14 +228,14 @@ def register_protein_feature_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_protein_feature_by_gene(gene, options, base_url)
+            result = query_protein_feature_by_gene(gene, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying protein feature by gene: {str(e)}"
 
 
-    @tool(name="bvbrc_protein_feature_get_by_taxon_id", description="Get protein feature data by taxon ID. Parameters: taxon_id (int) - taxon ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_protein_feature_get_by_taxon_id(taxon_id: int, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_protein_feature_get_by_taxon_id(taxon_id: int, limit: int = _default_limit,
                                             select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get protein feature data by taxon ID.
@@ -247,14 +256,14 @@ def register_protein_feature_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_protein_feature_by_taxon_id(taxon_id, options, base_url)
+            result = query_protein_feature_by_taxon_id(taxon_id, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying protein feature by taxon ID: {str(e)}"
 
 
-    @tool(name="bvbrc_protein_feature_get_by_feature_type", description="Get protein feature data by feature type. Parameters: feature_type (str) - feature type to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_protein_feature_get_by_feature_type(feature_type: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_protein_feature_get_by_feature_type(feature_type: str, limit: int = _default_limit,
                                                 select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get protein feature data by feature type.
@@ -275,14 +284,14 @@ def register_protein_feature_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_protein_feature_by_feature_type(feature_type, options, base_url)
+            result = query_protein_feature_by_feature_type(feature_type, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying protein feature by feature type: {str(e)}"
 
 
-    @tool(name="bvbrc_protein_feature_get_by_score_range", description="Get protein feature data by score range. Parameters: min_score (float) - minimum score; max_score (float) - maximum score; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_protein_feature_get_by_score_range(min_score: float, max_score: float, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_protein_feature_get_by_score_range(min_score: float, max_score: float, limit: int = _default_limit,
                                                 select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get protein feature data by score range.
@@ -304,14 +313,14 @@ def register_protein_feature_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_protein_feature_by_score_range(min_score, max_score, options, base_url)
+            result = query_protein_feature_by_score_range(min_score, max_score, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying protein feature by score range: {str(e)}"
 
 
-    @tool(name="bvbrc_protein_feature_get_by_length_range", description="Get protein feature data by length range. Parameters: min_length (int) - minimum length; max_length (int) - maximum length; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_protein_feature_get_by_length_range(min_length: int, max_length: int, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_protein_feature_get_by_length_range(min_length: int, max_length: int, limit: int = _default_limit,
                                                  select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get protein feature data by length range.
@@ -333,14 +342,14 @@ def register_protein_feature_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_protein_feature_by_length_range(min_length, max_length, options, base_url)
+            result = query_protein_feature_by_length_range(min_length, max_length, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying protein feature by length range: {str(e)}"
 
 
-    @tool(name="bvbrc_protein_feature_get_by_date_inserted_range", description="Get protein feature data by date inserted range. Parameters: start_date (str) - start date in YYYY-MM-DD format; end_date (str) - end date in YYYY-MM-DD format; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_protein_feature_get_by_date_inserted_range(start_date: str, end_date: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_protein_feature_get_by_date_inserted_range(start_date: str, end_date: str, limit: int = _default_limit,
                                                         select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get protein feature data by date inserted range.
@@ -362,14 +371,14 @@ def register_protein_feature_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_protein_feature_by_date_inserted_range(start_date, end_date, options, base_url)
+            result = query_protein_feature_by_date_inserted_range(start_date, end_date, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying protein feature by date inserted range: {str(e)}"
 
 
-    @tool(name="bvbrc_protein_feature_search_by_keyword", description="Search protein feature data by keyword. Parameters: keyword (str) - keyword to search for; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_protein_feature_search_by_keyword(keyword: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_protein_feature_search_by_keyword(keyword: str, limit: int = _default_limit,
                                                select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Search protein feature data by keyword.
@@ -390,14 +399,14 @@ def register_protein_feature_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_protein_feature_by_keyword(keyword, options, base_url)
+            result = query_protein_feature_by_keyword(keyword, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error searching protein feature by keyword: {str(e)}"
 
 
-    @tool(name="bvbrc_protein_feature_get_all", description="Get all protein feature data. Parameters: limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_protein_feature_get_all(limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_protein_feature_get_all(limit: int = _default_limit,
                                      select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get all protein feature data.
@@ -417,7 +426,7 @@ def register_protein_feature_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_protein_feature_all(options, base_url)
+            result = query_protein_feature_all(options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying all protein feature data: {str(e)}"

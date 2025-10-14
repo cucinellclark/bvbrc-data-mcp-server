@@ -8,7 +8,11 @@ This module contains MCP tools for querying genome data from BV-BRC.
 import json
 from typing import Optional
 
-from flaskmcp import tool
+from fastmcp import FastMCP
+# Global variables to store configuration
+_base_url = None
+_default_limit = None
+
 from data_functions import (
     query_genome_by_id,
     query_genome_by_taxon_id,
@@ -20,11 +24,16 @@ from data_functions import (
 )
 
 
-def register_genome_tools(base_url: str, default_limit: int):
+def register_genome_tools(mcp: FastMCP, base_url: str, default_limit: int):
     """Register all genome-related MCP tools with the Flask app."""
+    global _base_url, _default_limit
+    _base_url = base_url
+    _default_limit = default_limit
     
-    @tool(name="bvbrc_genome_get_by_id", description="Get genome data by genome ID. Parameters: genome_id (str) - genome ID to query (e.g., '208964.12'); limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_genome_get_by_id(genome_id: str, limit: int = default_limit, 
+
+    
+    @mcp.tool()
+    def bvbrc_genome_get_by_id(genome_id: str, limit: int = _default_limit, 
                               select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get genome data by genome ID.
@@ -45,14 +54,14 @@ def register_genome_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_genome_by_id(genome_id, options, base_url)
+            result = query_genome_by_id(genome_id, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying genome by ID: {str(e)}"
 
 
-    @tool(name="bvbrc_genome_get_by_taxon_id", description="Get genome data by taxon ID. Parameters: taxon_id (int) - taxon ID to query (e.g., 562); limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_genome_get_by_taxon_id(taxon_id: int, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_genome_get_by_taxon_id(taxon_id: int, limit: int = _default_limit,
                                     select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get genome data by taxon ID.
@@ -73,14 +82,14 @@ def register_genome_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_genome_by_taxon_id(taxon_id, options, base_url)
+            result = query_genome_by_taxon_id(taxon_id, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying genome by taxon ID: {str(e)}"
 
 
-    @tool(name="bvbrc_genome_get_by_genome_name", description="Get genome data by genome name. Parameters: genome_name (str) - genome name to query (e.g., 'Escherichia coli'); limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_genome_get_by_genome_name(genome_name: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_genome_get_by_genome_name(genome_name: str, limit: int = _default_limit,
                                          select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get genome data by genome name.
@@ -101,14 +110,14 @@ def register_genome_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_genome_by_genome_name(genome_name, options, base_url)
+            result = query_genome_by_genome_name(genome_name, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying genome by genome name: {str(e)}"
 
 
-    @tool(name="bvbrc_genome_get_by_species", description="Get genome data by species. Parameters: species (str) - species name to query (e.g., 'coli'); limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_genome_get_by_species(species: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_genome_get_by_species(species: str, limit: int = _default_limit,
                                    select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get genome data by species.
@@ -129,14 +138,14 @@ def register_genome_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_genome_by_species(species, options, base_url)
+            result = query_genome_by_species(species, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying genome by species: {str(e)}"
 
 
-    @tool(name="bvbrc_genome_get_by_genus", description="Get genome data by genus. Parameters: genus (str) - genus name to query (e.g., 'Escherichia'); limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_genome_get_by_genus(genus: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_genome_get_by_genus(genus: str, limit: int = _default_limit,
                                  select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get genome data by genus.
@@ -157,14 +166,14 @@ def register_genome_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_genome_by_genus(genus, options, base_url)
+            result = query_genome_by_genus(genus, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying genome by genus: {str(e)}"
 
 
     @tool(name="bvbrc_genome_query_by_filters", description="Query genome data by custom filters. Parameters: filters_json (str) - JSON string of filter criteria (e.g., '{\"genus\": \"Escherichia\", \"species\": \"coli\"}'); limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_genome_query_by_filters(filters_json: str, limit: int = default_limit,
+    def bvbrc_genome_query_by_filters(filters_json: str, limit: int = _default_limit,
                                      select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Query genome data by custom filters.
@@ -190,7 +199,7 @@ def register_genome_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_genome_by_filters(filters, options, base_url)
+            result = query_genome_by_filters(filters, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying genome by filters: {str(e)}"

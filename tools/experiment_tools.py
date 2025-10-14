@@ -8,7 +8,11 @@ This module contains MCP tools for querying experiment data from BV-BRC.
 import json
 from typing import Optional
 
-from flaskmcp import tool
+from fastmcp import FastMCP
+# Global variables to store configuration
+_base_url = None
+_default_limit = None
+
 from data_functions import (
     query_experiment_by_id,
     query_experiment_by_filters,
@@ -47,11 +51,16 @@ from data_functions import (
 )
 
 
-def register_experiment_tools(base_url: str, default_limit: int):
+def register_experiment_tools(mcp: FastMCP, base_url: str, default_limit: int):
     """Register all experiment-related MCP tools with the Flask app."""
+    global _base_url, _default_limit
+    _base_url = base_url
+    _default_limit = default_limit
     
-    @tool(name="bvbrc_experiment_get_by_id", description="Get experiment data by experiment ID. Parameters: exp_id (str) - experiment ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_experiment_get_by_id(exp_id: str, limit: int = default_limit,
+
+    
+    @mcp.tool()
+    def bvbrc_experiment_get_by_id(exp_id: str, limit: int = _default_limit,
                                   select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get experiment data by experiment ID.
@@ -72,14 +81,14 @@ def register_experiment_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_experiment_by_id(exp_id, options, base_url)
+            result = query_experiment_by_id(exp_id, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying experiment by ID: {str(e)}"
 
 
-    @tool(name="bvbrc_experiment_query_by_filters", description="Query experiment data by custom filters. Parameters: filters_json (str) - JSON string of filter criteria; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_experiment_query_by_filters(filters_json: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_experiment_query_by_filters(filters_json: str, limit: int = _default_limit,
                                          select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Query experiment data by custom filters.
@@ -105,14 +114,14 @@ def register_experiment_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_experiment_by_filters(filters, options, base_url)
+            result = query_experiment_by_filters(filters, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying experiment by filters: {str(e)}"
 
 
-    @tool(name="bvbrc_experiment_get_by_exp_name", description="Get experiment data by experiment name. Parameters: exp_name (str) - experiment name to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_experiment_get_by_exp_name(exp_name: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_experiment_get_by_exp_name(exp_name: str, limit: int = _default_limit,
                                         select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get experiment data by experiment name.
@@ -133,14 +142,14 @@ def register_experiment_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_experiment_by_exp_name(exp_name, options, base_url)
+            result = query_experiment_by_exp_name(exp_name, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying experiment by experiment name: {str(e)}"
 
 
-    @tool(name="bvbrc_experiment_get_by_exp_type", description="Get experiment data by experiment type. Parameters: exp_type (str) - experiment type to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_experiment_get_by_exp_type(exp_type: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_experiment_get_by_exp_type(exp_type: str, limit: int = _default_limit,
                                         select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get experiment data by experiment type.
@@ -161,14 +170,14 @@ def register_experiment_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_experiment_by_exp_type(exp_type, options, base_url)
+            result = query_experiment_by_exp_type(exp_type, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying experiment by experiment type: {str(e)}"
 
 
-    @tool(name="bvbrc_experiment_get_by_organism", description="Get experiment data by organism. Parameters: organism (str) - organism to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_experiment_get_by_organism(organism: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_experiment_get_by_organism(organism: str, limit: int = _default_limit,
                                         select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get experiment data by organism.
@@ -189,14 +198,14 @@ def register_experiment_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_experiment_by_organism(organism, options, base_url)
+            result = query_experiment_by_organism(organism, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying experiment by organism: {str(e)}"
 
 
-    @tool(name="bvbrc_experiment_get_by_strain", description="Get experiment data by strain. Parameters: strain (str) - strain to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_experiment_get_by_strain(strain: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_experiment_get_by_strain(strain: str, limit: int = _default_limit,
                                       select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get experiment data by strain.
@@ -217,14 +226,14 @@ def register_experiment_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_experiment_by_strain(strain, options, base_url)
+            result = query_experiment_by_strain(strain, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying experiment by strain: {str(e)}"
 
 
-    @tool(name="bvbrc_experiment_get_by_genome_id", description="Get experiment data by genome ID. Parameters: genome_id (str) - genome ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_experiment_get_by_genome_id(genome_id: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_experiment_get_by_genome_id(genome_id: str, limit: int = _default_limit,
                                          select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get experiment data by genome ID.
@@ -245,14 +254,14 @@ def register_experiment_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_experiment_by_genome_id(genome_id, options, base_url)
+            result = query_experiment_by_genome_id(genome_id, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying experiment by genome ID: {str(e)}"
 
 
-    @tool(name="bvbrc_experiment_get_by_study_name", description="Get experiment data by study name. Parameters: study_name (str) - study name to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_experiment_get_by_study_name(study_name: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_experiment_get_by_study_name(study_name: str, limit: int = _default_limit,
                                           select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get experiment data by study name.
@@ -273,14 +282,14 @@ def register_experiment_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_experiment_by_study_name(study_name, options, base_url)
+            result = query_experiment_by_study_name(study_name, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying experiment by study name: {str(e)}"
 
 
-    @tool(name="bvbrc_experiment_get_by_study_pi", description="Get experiment data by study principal investigator. Parameters: study_pi (str) - study principal investigator to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_experiment_get_by_study_pi(study_pi: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_experiment_get_by_study_pi(study_pi: str, limit: int = _default_limit,
                                         select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get experiment data by study principal investigator.
@@ -301,14 +310,14 @@ def register_experiment_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_experiment_by_study_pi(study_pi, options, base_url)
+            result = query_experiment_by_study_pi(study_pi, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying experiment by study principal investigator: {str(e)}"
 
 
-    @tool(name="bvbrc_experiment_get_by_pmid", description="Get experiment data by PMID. Parameters: pmid (str) - PMID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_experiment_get_by_pmid(pmid: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_experiment_get_by_pmid(pmid: str, limit: int = _default_limit,
                                     select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get experiment data by PMID.
@@ -329,14 +338,14 @@ def register_experiment_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_experiment_by_pmid(pmid, options, base_url)
+            result = query_experiment_by_pmid(pmid, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying experiment by PMID: {str(e)}"
 
 
-    @tool(name="bvbrc_experiment_get_by_doi", description="Get experiment data by DOI. Parameters: doi (str) - DOI to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_experiment_get_by_doi(doi: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_experiment_get_by_doi(doi: str, limit: int = _default_limit,
                                    select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get experiment data by DOI.
@@ -357,14 +366,14 @@ def register_experiment_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_experiment_by_doi(doi, options, base_url)
+            result = query_experiment_by_doi(doi, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying experiment by DOI: {str(e)}"
 
 
-    @tool(name="bvbrc_experiment_get_by_treatment_name", description="Get experiment data by treatment name. Parameters: treatment_name (str) - treatment name to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_experiment_get_by_treatment_name(treatment_name: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_experiment_get_by_treatment_name(treatment_name: str, limit: int = _default_limit,
                                               select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get experiment data by treatment name.
@@ -385,14 +394,14 @@ def register_experiment_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_experiment_by_treatment_name(treatment_name, options, base_url)
+            result = query_experiment_by_treatment_name(treatment_name, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying experiment by treatment name: {str(e)}"
 
 
-    @tool(name="bvbrc_experiment_get_by_treatment_type", description="Get experiment data by treatment type. Parameters: treatment_type (str) - treatment type to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_experiment_get_by_treatment_type(treatment_type: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_experiment_get_by_treatment_type(treatment_type: str, limit: int = _default_limit,
                                               select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get experiment data by treatment type.
@@ -413,14 +422,14 @@ def register_experiment_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_experiment_by_treatment_type(treatment_type, options, base_url)
+            result = query_experiment_by_treatment_type(treatment_type, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying experiment by treatment type: {str(e)}"
 
 
-    @tool(name="bvbrc_experiment_get_by_biosets_range", description="Get experiment data by biosets range. Parameters: min_biosets (int) - minimum biosets; max_biosets (int) - maximum biosets; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_experiment_get_by_biosets_range(min_biosets: int, max_biosets: int, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_experiment_get_by_biosets_range(min_biosets: int, max_biosets: int, limit: int = _default_limit,
                                             select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get experiment data by biosets range.
@@ -442,14 +451,14 @@ def register_experiment_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_experiment_by_biosets_range(min_biosets, max_biosets, options, base_url)
+            result = query_experiment_by_biosets_range(min_biosets, max_biosets, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying experiment by biosets range: {str(e)}"
 
 
-    @tool(name="bvbrc_experiment_get_by_samples_range", description="Get experiment data by samples range. Parameters: min_samples (int) - minimum samples; max_samples (int) - maximum samples; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_experiment_get_by_samples_range(min_samples: int, max_samples: int, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_experiment_get_by_samples_range(min_samples: int, max_samples: int, limit: int = _default_limit,
                                              select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get experiment data by samples range.
@@ -471,14 +480,14 @@ def register_experiment_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_experiment_by_samples_range(min_samples, max_samples, options, base_url)
+            result = query_experiment_by_samples_range(min_samples, max_samples, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying experiment by samples range: {str(e)}"
 
 
-    @tool(name="bvbrc_experiment_get_by_date_inserted_range", description="Get experiment data by date inserted range. Parameters: start_date (str) - start date in YYYY-MM-DD format; end_date (str) - end date in YYYY-MM-DD format; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_experiment_get_by_date_inserted_range(start_date: str, end_date: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_experiment_get_by_date_inserted_range(start_date: str, end_date: str, limit: int = _default_limit,
                                                    select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get experiment data by date inserted range.
@@ -500,14 +509,14 @@ def register_experiment_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_experiment_by_date_inserted_range(start_date, end_date, options, base_url)
+            result = query_experiment_by_date_inserted_range(start_date, end_date, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying experiment by date inserted range: {str(e)}"
 
 
-    @tool(name="bvbrc_experiment_search_by_keyword", description="Search experiment data by keyword. Parameters: keyword (str) - keyword to search for; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_experiment_search_by_keyword(keyword: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_experiment_search_by_keyword(keyword: str, limit: int = _default_limit,
                                           select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Search experiment data by keyword.
@@ -528,14 +537,14 @@ def register_experiment_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_experiment_by_keyword(keyword, options, base_url)
+            result = query_experiment_by_keyword(keyword, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error searching experiment by keyword: {str(e)}"
 
 
-    @tool(name="bvbrc_experiment_get_all", description="Get all experiment data. Parameters: limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_experiment_get_all(limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_experiment_get_all(limit: int = _default_limit,
                                 select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get all experiment data.
@@ -555,7 +564,7 @@ def register_experiment_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_experiment_all(options, base_url)
+            result = query_experiment_all(options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying all experiment data: {str(e)}"

@@ -8,7 +8,11 @@ This module contains MCP tools for querying taxonomy data from BV-BRC.
 import json
 from typing import Optional
 
-from flaskmcp import tool
+from fastmcp import FastMCP
+# Global variables to store configuration
+_base_url = None
+_default_limit = None
+
 from data_functions import (
     query_taxonomy_by_id,
     query_taxonomy_by_filters,
@@ -36,11 +40,16 @@ from data_functions import (
 )
 
 
-def register_taxonomy_tools(base_url: str, default_limit: int):
+def register_taxonomy_tools(mcp: FastMCP, base_url: str, default_limit: int):
     """Register all taxonomy-related MCP tools with the Flask app."""
+    global _base_url, _default_limit
+    _base_url = base_url
+    _default_limit = default_limit
     
-    @tool(name="bvbrc_taxonomy_get_by_id", description="Get taxonomy data by taxon ID. Parameters: taxon_id (str) - taxon ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_taxonomy_get_by_id(taxon_id: str, limit: int = default_limit,
+
+    
+    @mcp.tool()
+    def bvbrc_taxonomy_get_by_id(taxon_id: str, limit: int = _default_limit,
                                  select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get taxonomy data by taxon ID.
@@ -61,14 +70,14 @@ def register_taxonomy_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_taxonomy_by_id(taxon_id, options, base_url)
+            result = query_taxonomy_by_id(taxon_id, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying taxonomy by taxon ID: {str(e)}"
 
 
-    @tool(name="bvbrc_taxonomy_query_by_filters", description="Query taxonomy data by custom filters. Parameters: filters_json (str) - JSON string of filter criteria; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_taxonomy_query_by_filters(filters_json: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_taxonomy_query_by_filters(filters_json: str, limit: int = _default_limit,
                                         select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Query taxonomy data by custom filters.
@@ -94,14 +103,14 @@ def register_taxonomy_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_taxonomy_by_filters(filters, options, base_url)
+            result = query_taxonomy_by_filters(filters, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying taxonomy by filters: {str(e)}"
 
 
-    @tool(name="bvbrc_taxonomy_get_by_taxon_name", description="Get taxonomy data by taxon name. Parameters: taxon_name (str) - taxon name to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_taxonomy_get_by_taxon_name(taxon_name: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_taxonomy_get_by_taxon_name(taxon_name: str, limit: int = _default_limit,
                                          select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get taxonomy data by taxon name.
@@ -122,14 +131,14 @@ def register_taxonomy_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_taxonomy_by_taxon_name(taxon_name, options, base_url)
+            result = query_taxonomy_by_taxon_name(taxon_name, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying taxonomy by taxon name: {str(e)}"
 
 
-    @tool(name="bvbrc_taxonomy_get_by_taxon_rank", description="Get taxonomy data by taxon rank. Parameters: taxon_rank (str) - taxon rank to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_taxonomy_get_by_taxon_rank(taxon_rank: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_taxonomy_get_by_taxon_rank(taxon_rank: str, limit: int = _default_limit,
                                          select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get taxonomy data by taxon rank.
@@ -150,14 +159,14 @@ def register_taxonomy_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_taxonomy_by_taxon_rank(taxon_rank, options, base_url)
+            result = query_taxonomy_by_taxon_rank(taxon_rank, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying taxonomy by taxon rank: {str(e)}"
 
 
-    @tool(name="bvbrc_taxonomy_get_by_lineage", description="Get taxonomy data by lineage. Parameters: lineage (str) - lineage to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_taxonomy_get_by_lineage(lineage: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_taxonomy_get_by_lineage(lineage: str, limit: int = _default_limit,
                                       select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get taxonomy data by lineage.
@@ -178,14 +187,14 @@ def register_taxonomy_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_taxonomy_by_lineage(lineage, options, base_url)
+            result = query_taxonomy_by_lineage(lineage, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying taxonomy by lineage: {str(e)}"
 
 
-    @tool(name="bvbrc_taxonomy_get_by_division", description="Get taxonomy data by division. Parameters: division (str) - division to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_taxonomy_get_by_division(division: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_taxonomy_get_by_division(division: str, limit: int = _default_limit,
                                        select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get taxonomy data by division.
@@ -206,14 +215,14 @@ def register_taxonomy_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_taxonomy_by_division(division, options, base_url)
+            result = query_taxonomy_by_division(division, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying taxonomy by division: {str(e)}"
 
 
-    @tool(name="bvbrc_taxonomy_get_by_genetic_code", description="Get taxonomy data by genetic code. Parameters: genetic_code (int) - genetic code to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_taxonomy_get_by_genetic_code(genetic_code: int, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_taxonomy_get_by_genetic_code(genetic_code: int, limit: int = _default_limit,
                                            select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get taxonomy data by genetic code.
@@ -234,14 +243,14 @@ def register_taxonomy_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_taxonomy_by_genetic_code(genetic_code, options, base_url)
+            result = query_taxonomy_by_genetic_code(genetic_code, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying taxonomy by genetic code: {str(e)}"
 
 
-    @tool(name="bvbrc_taxonomy_get_by_genome_count", description="Get taxonomy data by genome count. Parameters: genome_count (int) - genome count to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_taxonomy_get_by_genome_count(genome_count: int, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_taxonomy_get_by_genome_count(genome_count: int, limit: int = _default_limit,
                                           select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get taxonomy data by genome count.
@@ -262,14 +271,14 @@ def register_taxonomy_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_taxonomy_by_genome_count(genome_count, options, base_url)
+            result = query_taxonomy_by_genome_count(genome_count, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying taxonomy by genome count: {str(e)}"
 
 
-    @tool(name="bvbrc_taxonomy_get_by_cds_mean_range", description="Get taxonomy data by CDS mean range. Parameters: min_cds_mean (float) - minimum CDS mean; max_cds_mean (float) - maximum CDS mean; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_taxonomy_get_by_cds_mean_range(min_cds_mean: float, max_cds_mean: float, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_taxonomy_get_by_cds_mean_range(min_cds_mean: float, max_cds_mean: float, limit: int = _default_limit,
                                              select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get taxonomy data by CDS mean range.
@@ -291,14 +300,14 @@ def register_taxonomy_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_taxonomy_by_cds_mean_range(min_cds_mean, max_cds_mean, options, base_url)
+            result = query_taxonomy_by_cds_mean_range(min_cds_mean, max_cds_mean, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying taxonomy by CDS mean range: {str(e)}"
 
 
-    @tool(name="bvbrc_taxonomy_get_by_genome_count_range", description="Get taxonomy data by genome count range. Parameters: min_genome_count (int) - minimum genome count; max_genome_count (int) - maximum genome count; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_taxonomy_get_by_genome_count_range(min_genome_count: int, max_genome_count: int, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_taxonomy_get_by_genome_count_range(min_genome_count: int, max_genome_count: int, limit: int = _default_limit,
                                                  select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get taxonomy data by genome count range.
@@ -320,14 +329,14 @@ def register_taxonomy_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_taxonomy_by_genome_count_range(min_genome_count, max_genome_count, options, base_url)
+            result = query_taxonomy_by_genome_count_range(min_genome_count, max_genome_count, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying taxonomy by genome count range: {str(e)}"
 
 
-    @tool(name="bvbrc_taxonomy_search_by_keyword", description="Search taxonomy data by keyword. Parameters: keyword (str) - keyword to search for; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_taxonomy_search_by_keyword(keyword: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_taxonomy_search_by_keyword(keyword: str, limit: int = _default_limit,
                                          select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Search taxonomy data by keyword.
@@ -348,14 +357,14 @@ def register_taxonomy_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_taxonomy_by_keyword(keyword, options, base_url)
+            result = query_taxonomy_by_keyword(keyword, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error searching taxonomy by keyword: {str(e)}"
 
 
-    @tool(name="bvbrc_taxonomy_get_all", description="Get all taxonomy data. Parameters: limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_taxonomy_get_all(limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_taxonomy_get_all(limit: int = _default_limit,
                                select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get all taxonomy data.
@@ -375,7 +384,7 @@ def register_taxonomy_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_taxonomy_all(options, base_url)
+            result = query_taxonomy_all(options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying all taxonomy data: {str(e)}"

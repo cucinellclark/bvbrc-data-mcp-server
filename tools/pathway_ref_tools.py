@@ -8,7 +8,11 @@ This module contains MCP tools for querying pathway reference data from BV-BRC.
 import json
 from typing import Optional
 
-from flaskmcp import tool
+from fastmcp import FastMCP
+# Global variables to store configuration
+_base_url = None
+_default_limit = None
+
 from data_functions import (
     query_pathway_ref_by_id,
     query_pathway_ref_by_filters,
@@ -30,11 +34,16 @@ from data_functions import (
 )
 
 
-def register_pathway_ref_tools(base_url: str, default_limit: int):
+def register_pathway_ref_tools(mcp: FastMCP, base_url: str, default_limit: int):
     """Register all pathway reference-related MCP tools with the Flask app."""
+    global _base_url, _default_limit
+    _base_url = base_url
+    _default_limit = default_limit
     
-    @tool(name="bvbrc_pathway_ref_get_by_id", description="Get pathway reference data by ID. Parameters: id (str) - ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_pathway_ref_get_by_id(id: str, limit: int = default_limit,
+
+    
+    @mcp.tool()
+    def bvbrc_pathway_ref_get_by_id(id: str, limit: int = _default_limit,
                                    select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get pathway reference data by ID.
@@ -55,14 +64,14 @@ def register_pathway_ref_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_pathway_ref_by_id(id, options, base_url)
+            result = query_pathway_ref_by_id(id, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying pathway reference by ID: {str(e)}"
 
 
-    @tool(name="bvbrc_pathway_ref_query_by_filters", description="Query pathway reference data by custom filters. Parameters: filters_json (str) - JSON string of filter criteria; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_pathway_ref_query_by_filters(filters_json: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_pathway_ref_query_by_filters(filters_json: str, limit: int = _default_limit,
                                           select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Query pathway reference data by custom filters.
@@ -88,14 +97,14 @@ def register_pathway_ref_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_pathway_ref_by_filters(filters, options, base_url)
+            result = query_pathway_ref_by_filters(filters, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying pathway reference by filters: {str(e)}"
 
 
-    @tool(name="bvbrc_pathway_ref_get_by_ec_number", description="Get pathway reference data by EC number. Parameters: ec_number (str) - EC number to query (e.g., '1.1.1.1'); limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_pathway_ref_get_by_ec_number(ec_number: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_pathway_ref_get_by_ec_number(ec_number: str, limit: int = _default_limit,
                                           select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get pathway reference data by EC number.
@@ -116,14 +125,14 @@ def register_pathway_ref_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_pathway_ref_by_ec_number(ec_number, options, base_url)
+            result = query_pathway_ref_by_ec_number(ec_number, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying pathway reference by EC number: {str(e)}"
 
 
-    @tool(name="bvbrc_pathway_ref_get_by_pathway_id", description="Get pathway reference data by pathway ID. Parameters: pathway_id (str) - pathway ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_pathway_ref_get_by_pathway_id(pathway_id: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_pathway_ref_get_by_pathway_id(pathway_id: str, limit: int = _default_limit,
                                            select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get pathway reference data by pathway ID.
@@ -144,14 +153,14 @@ def register_pathway_ref_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_pathway_ref_by_pathway_id(pathway_id, options, base_url)
+            result = query_pathway_ref_by_pathway_id(pathway_id, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying pathway reference by pathway ID: {str(e)}"
 
 
-    @tool(name="bvbrc_pathway_ref_get_by_pathway_name", description="Get pathway reference data by pathway name. Parameters: pathway_name (str) - pathway name to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_pathway_ref_get_by_pathway_name(pathway_name: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_pathway_ref_get_by_pathway_name(pathway_name: str, limit: int = _default_limit,
                                              select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get pathway reference data by pathway name.
@@ -172,14 +181,14 @@ def register_pathway_ref_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_pathway_ref_by_pathway_name(pathway_name, options, base_url)
+            result = query_pathway_ref_by_pathway_name(pathway_name, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying pathway reference by pathway name: {str(e)}"
 
 
-    @tool(name="bvbrc_pathway_ref_get_by_pathway_class", description="Get pathway reference data by pathway class. Parameters: pathway_class (str) - pathway class to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_pathway_ref_get_by_pathway_class(pathway_class: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_pathway_ref_get_by_pathway_class(pathway_class: str, limit: int = _default_limit,
                                               select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get pathway reference data by pathway class.
@@ -200,14 +209,14 @@ def register_pathway_ref_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_pathway_ref_by_pathway_class(pathway_class, options, base_url)
+            result = query_pathway_ref_by_pathway_class(pathway_class, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying pathway reference by pathway class: {str(e)}"
 
 
-    @tool(name="bvbrc_pathway_ref_get_by_occurrence", description="Get pathway reference data by occurrence. Parameters: occurrence (int) - occurrence to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_pathway_ref_get_by_occurrence(occurrence: int, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_pathway_ref_get_by_occurrence(occurrence: int, limit: int = _default_limit,
                                            select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get pathway reference data by occurrence.
@@ -228,14 +237,14 @@ def register_pathway_ref_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_pathway_ref_by_occurrence(occurrence, options, base_url)
+            result = query_pathway_ref_by_occurrence(occurrence, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying pathway reference by occurrence: {str(e)}"
 
 
-    @tool(name="bvbrc_pathway_ref_get_by_occurrence_range", description="Get pathway reference data by occurrence range. Parameters: min_occurrence (int) - minimum occurrence; max_occurrence (int) - maximum occurrence; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_pathway_ref_get_by_occurrence_range(min_occurrence: int, max_occurrence: int, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_pathway_ref_get_by_occurrence_range(min_occurrence: int, max_occurrence: int, limit: int = _default_limit,
                                                   select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get pathway reference data by occurrence range.
@@ -257,14 +266,14 @@ def register_pathway_ref_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_pathway_ref_by_occurrence_range(min_occurrence, max_occurrence, options, base_url)
+            result = query_pathway_ref_by_occurrence_range(min_occurrence, max_occurrence, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying pathway reference by occurrence range: {str(e)}"
 
 
-    @tool(name="bvbrc_pathway_ref_get_by_date_inserted_range", description="Get pathway reference data by date inserted range. Parameters: start_date (str) - start date in YYYY-MM-DD format; end_date (str) - end date in YYYY-MM-DD format; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_pathway_ref_get_by_date_inserted_range(start_date: str, end_date: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_pathway_ref_get_by_date_inserted_range(start_date: str, end_date: str, limit: int = _default_limit,
                                                     select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get pathway reference data by date inserted range.
@@ -286,14 +295,14 @@ def register_pathway_ref_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_pathway_ref_by_date_inserted_range(start_date, end_date, options, base_url)
+            result = query_pathway_ref_by_date_inserted_range(start_date, end_date, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying pathway reference by date inserted range: {str(e)}"
 
 
-    @tool(name="bvbrc_pathway_ref_search_by_keyword", description="Search pathway reference data by keyword. Parameters: keyword (str) - keyword to search for; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_pathway_ref_search_by_keyword(keyword: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_pathway_ref_search_by_keyword(keyword: str, limit: int = _default_limit,
                                            select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Search pathway reference data by keyword.
@@ -314,14 +323,14 @@ def register_pathway_ref_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_pathway_ref_by_keyword(keyword, options, base_url)
+            result = query_pathway_ref_by_keyword(keyword, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error searching pathway reference by keyword: {str(e)}"
 
 
-    @tool(name="bvbrc_pathway_ref_get_all", description="Get all pathway reference data. Parameters: limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_pathway_ref_get_all(limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_pathway_ref_get_all(limit: int = _default_limit,
                                   select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get all pathway reference data.
@@ -341,7 +350,7 @@ def register_pathway_ref_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_pathway_ref_all(options, base_url)
+            result = query_pathway_ref_all(options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying all pathway reference data: {str(e)}"

@@ -8,7 +8,11 @@ This module contains MCP tools for querying genome antimicrobial resistance data
 import json
 from typing import Optional
 
-from flaskmcp import tool
+from fastmcp import FastMCP
+# Global variables to store configuration
+_base_url = None
+_default_limit = None
+
 from data_functions import (
     query_genome_amr_by_id,
     query_genome_amr_by_filters,
@@ -42,11 +46,16 @@ from data_functions import (
 )
 
 
-def register_genome_amr_tools(base_url: str, default_limit: int):
+def register_genome_amr_tools(mcp: FastMCP, base_url: str, default_limit: int):
     """Register all genome AMR-related MCP tools with the Flask app."""
+    global _base_url, _default_limit
+    _base_url = base_url
+    _default_limit = default_limit
     
-    @tool(name="bvbrc_genome_amr_get_by_id", description="Get genome AMR data by ID. Parameters: id (str) - AMR record ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_genome_amr_get_by_id(id: str, limit: int = default_limit,
+
+    
+    @mcp.tool()
+    def bvbrc_genome_amr_get_by_id(id: str, limit: int = _default_limit,
                                    select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get genome AMR data by ID.
@@ -67,14 +76,14 @@ def register_genome_amr_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_genome_amr_by_id(id, options, base_url)
+            result = query_genome_amr_by_id(id, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying genome AMR by ID: {str(e)}"
 
 
-    @tool(name="bvbrc_genome_amr_query_by_filters", description="Query genome AMR data by custom filters. Parameters: filters_json (str) - JSON string of filter criteria; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_genome_amr_query_by_filters(filters_json: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_genome_amr_query_by_filters(filters_json: str, limit: int = _default_limit,
                                          select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Query genome AMR data by custom filters.
@@ -100,14 +109,14 @@ def register_genome_amr_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_genome_amr_by_filters(filters, options, base_url)
+            result = query_genome_amr_by_filters(filters, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying genome AMR by filters: {str(e)}"
 
 
-    @tool(name="bvbrc_genome_amr_get_by_antibiotic", description="Get genome AMR data by antibiotic. Parameters: antibiotic (str) - antibiotic to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_genome_amr_get_by_antibiotic(antibiotic: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_genome_amr_get_by_antibiotic(antibiotic: str, limit: int = _default_limit,
                                           select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get genome AMR data by antibiotic.
@@ -128,14 +137,14 @@ def register_genome_amr_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_genome_amr_by_antibiotic(antibiotic, options, base_url)
+            result = query_genome_amr_by_antibiotic(antibiotic, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying genome AMR by antibiotic: {str(e)}"
 
 
-    @tool(name="bvbrc_genome_amr_get_by_genome_id", description="Get genome AMR data by genome ID. Parameters: genome_id (str) - genome ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_genome_amr_get_by_genome_id(genome_id: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_genome_amr_get_by_genome_id(genome_id: str, limit: int = _default_limit,
                                          select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get genome AMR data by genome ID.
@@ -156,14 +165,14 @@ def register_genome_amr_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_genome_amr_by_genome_id(genome_id, options, base_url)
+            result = query_genome_amr_by_genome_id(genome_id, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying genome AMR by genome ID: {str(e)}"
 
 
-    @tool(name="bvbrc_genome_amr_get_by_genome_name", description="Get genome AMR data by genome name. Parameters: genome_name (str) - genome name to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_genome_amr_get_by_genome_name(genome_name: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_genome_amr_get_by_genome_name(genome_name: str, limit: int = _default_limit,
                                            select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get genome AMR data by genome name.
@@ -184,14 +193,14 @@ def register_genome_amr_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_genome_amr_by_genome_name(genome_name, options, base_url)
+            result = query_genome_amr_by_genome_name(genome_name, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying genome AMR by genome name: {str(e)}"
 
 
-    @tool(name="bvbrc_genome_amr_get_by_resistant_phenotype", description="Get genome AMR data by resistant phenotype. Parameters: resistant_phenotype (str) - resistant phenotype to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_genome_amr_get_by_resistant_phenotype(resistant_phenotype: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_genome_amr_get_by_resistant_phenotype(resistant_phenotype: str, limit: int = _default_limit,
                                                    select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get genome AMR data by resistant phenotype.
@@ -212,14 +221,14 @@ def register_genome_amr_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_genome_amr_by_resistant_phenotype(resistant_phenotype, options, base_url)
+            result = query_genome_amr_by_resistant_phenotype(resistant_phenotype, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying genome AMR by resistant phenotype: {str(e)}"
 
 
-    @tool(name="bvbrc_genome_amr_get_by_taxon_id", description="Get genome AMR data by taxon ID. Parameters: taxon_id (int) - taxon ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_genome_amr_get_by_taxon_id(taxon_id: int, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_genome_amr_get_by_taxon_id(taxon_id: int, limit: int = _default_limit,
                                          select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get genome AMR data by taxon ID.
@@ -240,14 +249,14 @@ def register_genome_amr_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_genome_amr_by_taxon_id(taxon_id, options, base_url)
+            result = query_genome_amr_by_taxon_id(taxon_id, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying genome AMR by taxon ID: {str(e)}"
 
 
-    @tool(name="bvbrc_genome_amr_get_by_pmid", description="Get genome AMR data by PMID. Parameters: pmid (int) - PMID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_genome_amr_get_by_pmid(pmid: int, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_genome_amr_get_by_pmid(pmid: int, limit: int = _default_limit,
                                      select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get genome AMR data by PMID.
@@ -268,14 +277,14 @@ def register_genome_amr_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_genome_amr_by_pmid(pmid, options, base_url)
+            result = query_genome_amr_by_pmid(pmid, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying genome AMR by PMID: {str(e)}"
 
 
-    @tool(name="bvbrc_genome_amr_get_by_public_status", description="Get genome AMR data by public status. Parameters: is_public (bool) - public status to query (True/False); limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_genome_amr_get_by_public_status(is_public: bool, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_genome_amr_get_by_public_status(is_public: bool, limit: int = _default_limit,
                                               select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get genome AMR data by public status.
@@ -296,14 +305,14 @@ def register_genome_amr_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_genome_amr_by_public_status(is_public, options, base_url)
+            result = query_genome_amr_by_public_status(is_public, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying genome AMR by public status: {str(e)}"
 
 
-    @tool(name="bvbrc_genome_amr_get_by_date_range", description="Get genome AMR data by date range. Parameters: start_date (str) - start date in YYYY-MM-DD format; end_date (str) - end date in YYYY-MM-DD format; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_genome_amr_get_by_date_range(start_date: str, end_date: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_genome_amr_get_by_date_range(start_date: str, end_date: str, limit: int = _default_limit,
                                            select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get genome AMR data by date range.
@@ -325,14 +334,14 @@ def register_genome_amr_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_genome_amr_by_date_range(start_date, end_date, options, base_url)
+            result = query_genome_amr_by_date_range(start_date, end_date, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying genome AMR by date range: {str(e)}"
 
 
-    @tool(name="bvbrc_genome_amr_search_by_keyword", description="Search genome AMR data by keyword. Parameters: keyword (str) - keyword to search for; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_genome_amr_search_by_keyword(keyword: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_genome_amr_search_by_keyword(keyword: str, limit: int = _default_limit,
                                           select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Search genome AMR data by keyword.
@@ -353,14 +362,14 @@ def register_genome_amr_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_genome_amr_by_keyword(keyword, options, base_url)
+            result = query_genome_amr_by_keyword(keyword, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error searching genome AMR by keyword: {str(e)}"
 
 
-    @tool(name="bvbrc_genome_amr_get_all", description="Get all genome AMR data. Parameters: limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_genome_amr_get_all(limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_genome_amr_get_all(limit: int = _default_limit,
                                  select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get all genome AMR data.
@@ -380,7 +389,7 @@ def register_genome_amr_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_genome_amr_all(options, base_url)
+            result = query_genome_amr_all(options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying all genome AMR data: {str(e)}"

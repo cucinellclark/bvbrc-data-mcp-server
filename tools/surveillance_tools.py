@@ -8,7 +8,11 @@ This module contains MCP tools for querying surveillance data from BV-BRC.
 import json
 from typing import Optional
 
-from flaskmcp import tool
+from fastmcp import FastMCP
+# Global variables to store configuration
+_base_url = None
+_default_limit = None
+
 from data_functions import (
     query_surveillance_by_id,
     query_surveillance_by_filters,
@@ -41,11 +45,16 @@ from data_functions import (
 )
 
 
-def register_surveillance_tools(base_url: str, default_limit: int):
+def register_surveillance_tools(mcp: FastMCP, base_url: str, default_limit: int):
     """Register all surveillance-related MCP tools with the Flask app."""
+    global _base_url, _default_limit
+    _base_url = base_url
+    _default_limit = default_limit
     
-    @tool(name="bvbrc_surveillance_get_by_id", description="Get surveillance data by ID. Parameters: id (str) - ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_surveillance_get_by_id(id: str, limit: int = default_limit,
+
+    
+    @mcp.tool()
+    def bvbrc_surveillance_get_by_id(id: str, limit: int = _default_limit,
                                       select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get surveillance data by ID.
@@ -66,14 +75,14 @@ def register_surveillance_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_surveillance_by_id(id, options, base_url)
+            result = query_surveillance_by_id(id, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying surveillance by ID: {str(e)}"
 
 
-    @tool(name="bvbrc_surveillance_query_by_filters", description="Query surveillance data by custom filters. Parameters: filters_json (str) - JSON string of filter criteria; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_surveillance_query_by_filters(filters_json: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_surveillance_query_by_filters(filters_json: str, limit: int = _default_limit,
                                             select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Query surveillance data by custom filters.
@@ -99,14 +108,14 @@ def register_surveillance_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_surveillance_by_filters(filters, options, base_url)
+            result = query_surveillance_by_filters(filters, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying surveillance by filters: {str(e)}"
 
 
-    @tool(name="bvbrc_surveillance_get_by_host_species", description="Get surveillance data by host species. Parameters: host_species (str) - host species to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_surveillance_get_by_host_species(host_species: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_surveillance_get_by_host_species(host_species: str, limit: int = _default_limit,
                                                select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get surveillance data by host species.
@@ -127,14 +136,14 @@ def register_surveillance_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_surveillance_by_host_species(host_species, options, base_url)
+            result = query_surveillance_by_host_species(host_species, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying surveillance by host species: {str(e)}"
 
 
-    @tool(name="bvbrc_surveillance_get_by_collection_country", description="Get surveillance data by collection country. Parameters: collection_country (str) - collection country to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_surveillance_get_by_collection_country(collection_country: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_surveillance_get_by_collection_country(collection_country: str, limit: int = _default_limit,
                                                      select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get surveillance data by collection country.
@@ -155,14 +164,14 @@ def register_surveillance_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_surveillance_by_collection_country(collection_country, options, base_url)
+            result = query_surveillance_by_collection_country(collection_country, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying surveillance by collection country: {str(e)}"
 
 
-    @tool(name="bvbrc_surveillance_get_by_species", description="Get surveillance data by species. Parameters: species (str) - species to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_surveillance_get_by_species(species: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_surveillance_get_by_species(species: str, limit: int = _default_limit,
                                           select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get surveillance data by species.
@@ -183,14 +192,14 @@ def register_surveillance_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_surveillance_by_species(species, options, base_url)
+            result = query_surveillance_by_species(species, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying surveillance by species: {str(e)}"
 
 
-    @tool(name="bvbrc_surveillance_get_by_strain", description="Get surveillance data by strain. Parameters: strain (str) - strain to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_surveillance_get_by_strain(strain: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_surveillance_get_by_strain(strain: str, limit: int = _default_limit,
                                          select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get surveillance data by strain.
@@ -211,14 +220,14 @@ def register_surveillance_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_surveillance_by_strain(strain, options, base_url)
+            result = query_surveillance_by_strain(strain, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying surveillance by strain: {str(e)}"
 
 
-    @tool(name="bvbrc_surveillance_get_by_disease_status", description="Get surveillance data by disease status. Parameters: disease_status (str) - disease status to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_surveillance_get_by_disease_status(disease_status: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_surveillance_get_by_disease_status(disease_status: str, limit: int = _default_limit,
                                                  select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get surveillance data by disease status.
@@ -239,14 +248,14 @@ def register_surveillance_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_surveillance_by_disease_status(disease_status, options, base_url)
+            result = query_surveillance_by_disease_status(disease_status, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying surveillance by disease status: {str(e)}"
 
 
-    @tool(name="bvbrc_surveillance_get_by_collection_date_range", description="Get surveillance data by collection date range. Parameters: start_date (str) - start date in YYYY-MM-DD format; end_date (str) - end date in YYYY-MM-DD format; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_surveillance_get_by_collection_date_range(start_date: str, end_date: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_surveillance_get_by_collection_date_range(start_date: str, end_date: str, limit: int = _default_limit,
                                                         select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get surveillance data by collection date range.
@@ -268,14 +277,14 @@ def register_surveillance_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_surveillance_by_collection_date_range(start_date, end_date, options, base_url)
+            result = query_surveillance_by_collection_date_range(start_date, end_date, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying surveillance by collection date range: {str(e)}"
 
 
-    @tool(name="bvbrc_surveillance_search_by_keyword", description="Search surveillance data by keyword. Parameters: keyword (str) - keyword to search for; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_surveillance_search_by_keyword(keyword: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_surveillance_search_by_keyword(keyword: str, limit: int = _default_limit,
                                              select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Search surveillance data by keyword.
@@ -296,14 +305,14 @@ def register_surveillance_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_surveillance_by_keyword(keyword, options, base_url)
+            result = query_surveillance_by_keyword(keyword, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error searching surveillance by keyword: {str(e)}"
 
 
-    @tool(name="bvbrc_surveillance_get_all", description="Get all surveillance data. Parameters: limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_surveillance_get_all(limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_surveillance_get_all(limit: int = _default_limit,
                                    select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get all surveillance data.
@@ -323,7 +332,7 @@ def register_surveillance_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_surveillance_all(options, base_url)
+            result = query_surveillance_all(options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying all surveillance data: {str(e)}"

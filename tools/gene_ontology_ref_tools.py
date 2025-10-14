@@ -8,7 +8,11 @@ This module contains MCP tools for querying gene ontology reference data from BV
 import json
 from typing import Optional
 
-from flaskmcp import tool
+from fastmcp import FastMCP
+# Global variables to store configuration
+_base_url = None
+_default_limit = None
+
 from data_functions import (
     query_gene_ontology_ref_by_id,
     query_gene_ontology_ref_by_filters,
@@ -23,11 +27,16 @@ from data_functions import (
 )
 
 
-def register_gene_ontology_ref_tools(base_url: str, default_limit: int):
+def register_gene_ontology_ref_tools(mcp: FastMCP, base_url: str, default_limit: int):
     """Register all gene ontology reference-related MCP tools with the Flask app."""
+    global _base_url, _default_limit
+    _base_url = base_url
+    _default_limit = default_limit
     
-    @tool(name="bvbrc_gene_ontology_ref_get_by_id", description="Get gene ontology reference data by GO ID. Parameters: go_id (str) - GO ID to query (e.g., 'GO:0008150'); limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_gene_ontology_ref_get_by_id(go_id: str, limit: int = default_limit,
+
+    
+    @mcp.tool()
+    def bvbrc_gene_ontology_ref_get_by_id(go_id: str, limit: int = _default_limit,
                                          select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get gene ontology reference data by GO ID.
@@ -48,14 +57,14 @@ def register_gene_ontology_ref_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_gene_ontology_ref_by_id(go_id, options, base_url)
+            result = query_gene_ontology_ref_by_id(go_id, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying gene ontology reference by GO ID: {str(e)}"
 
 
-    @tool(name="bvbrc_gene_ontology_ref_query_by_filters", description="Query gene ontology reference data by custom filters. Parameters: filters_json (str) - JSON string of filter criteria; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_gene_ontology_ref_query_by_filters(filters_json: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_gene_ontology_ref_query_by_filters(filters_json: str, limit: int = _default_limit,
                                                 select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Query gene ontology reference data by custom filters.
@@ -81,14 +90,14 @@ def register_gene_ontology_ref_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_gene_ontology_ref_by_filters(filters, options, base_url)
+            result = query_gene_ontology_ref_by_filters(filters, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying gene ontology reference by filters: {str(e)}"
 
 
-    @tool(name="bvbrc_gene_ontology_ref_get_by_go_name", description="Get gene ontology reference data by GO name. Parameters: go_name (str) - GO name to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_gene_ontology_ref_get_by_go_name(go_name: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_gene_ontology_ref_get_by_go_name(go_name: str, limit: int = _default_limit,
                                              select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get gene ontology reference data by GO name.
@@ -109,14 +118,14 @@ def register_gene_ontology_ref_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_gene_ontology_ref_by_go_name(go_name, options, base_url)
+            result = query_gene_ontology_ref_by_go_name(go_name, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying gene ontology reference by GO name: {str(e)}"
 
 
-    @tool(name="bvbrc_gene_ontology_ref_get_by_definition", description="Get gene ontology reference data by definition. Parameters: definition (str) - definition to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_gene_ontology_ref_get_by_definition(definition: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_gene_ontology_ref_get_by_definition(definition: str, limit: int = _default_limit,
                                                  select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get gene ontology reference data by definition.
@@ -137,14 +146,14 @@ def register_gene_ontology_ref_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_gene_ontology_ref_by_definition(definition, options, base_url)
+            result = query_gene_ontology_ref_by_definition(definition, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying gene ontology reference by definition: {str(e)}"
 
 
-    @tool(name="bvbrc_gene_ontology_ref_get_by_ontology", description="Get gene ontology reference data by ontology. Parameters: ontology (str) - ontology to query (e.g., 'biological_process', 'molecular_function', 'cellular_component'); limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_gene_ontology_ref_get_by_ontology(ontology: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_gene_ontology_ref_get_by_ontology(ontology: str, limit: int = _default_limit,
                                                 select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get gene ontology reference data by ontology.
@@ -165,14 +174,14 @@ def register_gene_ontology_ref_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_gene_ontology_ref_by_ontology(ontology, options, base_url)
+            result = query_gene_ontology_ref_by_ontology(ontology, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying gene ontology reference by ontology: {str(e)}"
 
 
-    @tool(name="bvbrc_gene_ontology_ref_get_by_date_inserted_range", description="Get gene ontology reference data by date inserted range. Parameters: start_date (str) - start date in YYYY-MM-DD format; end_date (str) - end date in YYYY-MM-DD format; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_gene_ontology_ref_get_by_date_inserted_range(start_date: str, end_date: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_gene_ontology_ref_get_by_date_inserted_range(start_date: str, end_date: str, limit: int = _default_limit,
                                                            select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get gene ontology reference data by date inserted range.
@@ -194,14 +203,14 @@ def register_gene_ontology_ref_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_gene_ontology_ref_by_date_inserted_range(start_date, end_date, options, base_url)
+            result = query_gene_ontology_ref_by_date_inserted_range(start_date, end_date, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying gene ontology reference by date inserted range: {str(e)}"
 
 
-    @tool(name="bvbrc_gene_ontology_ref_get_by_date_modified_range", description="Get gene ontology reference data by date modified range. Parameters: start_date (str) - start date in YYYY-MM-DD format; end_date (str) - end date in YYYY-MM-DD format; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_gene_ontology_ref_get_by_date_modified_range(start_date: str, end_date: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_gene_ontology_ref_get_by_date_modified_range(start_date: str, end_date: str, limit: int = _default_limit,
                                                            select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get gene ontology reference data by date modified range.
@@ -223,14 +232,14 @@ def register_gene_ontology_ref_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_gene_ontology_ref_by_date_modified_range(start_date, end_date, options, base_url)
+            result = query_gene_ontology_ref_by_date_modified_range(start_date, end_date, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying gene ontology reference by date modified range: {str(e)}"
 
 
-    @tool(name="bvbrc_gene_ontology_ref_search_by_keyword", description="Search gene ontology reference data by keyword. Parameters: keyword (str) - keyword to search for; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_gene_ontology_ref_search_by_keyword(keyword: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_gene_ontology_ref_search_by_keyword(keyword: str, limit: int = _default_limit,
                                                  select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Search gene ontology reference data by keyword.
@@ -251,14 +260,14 @@ def register_gene_ontology_ref_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_gene_ontology_ref_by_keyword(keyword, options, base_url)
+            result = query_gene_ontology_ref_by_keyword(keyword, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error searching gene ontology reference by keyword: {str(e)}"
 
 
-    @tool(name="bvbrc_gene_ontology_ref_get_all", description="Get all gene ontology reference data. Parameters: limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_gene_ontology_ref_get_all(limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_gene_ontology_ref_get_all(limit: int = _default_limit,
                                         select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get all gene ontology reference data.
@@ -278,7 +287,7 @@ def register_gene_ontology_ref_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_gene_ontology_ref_all(options, base_url)
+            result = query_gene_ontology_ref_all(options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying all gene ontology reference data: {str(e)}"

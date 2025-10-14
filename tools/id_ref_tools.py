@@ -8,7 +8,11 @@ This module contains MCP tools for querying ID reference data from BV-BRC.
 import json
 from typing import Optional
 
-from flaskmcp import tool
+from fastmcp import FastMCP
+# Global variables to store configuration
+_base_url = None
+_default_limit = None
+
 from data_functions import (
     query_id_ref_by_id,
     query_id_ref_by_filters,
@@ -23,11 +27,16 @@ from data_functions import (
 )
 
 
-def register_id_ref_tools(base_url: str, default_limit: int):
+def register_id_ref_tools(mcp: FastMCP, base_url: str, default_limit: int):
     """Register all ID reference-related MCP tools with the Flask app."""
+    global _base_url, _default_limit
+    _base_url = base_url
+    _default_limit = default_limit
     
-    @tool(name="bvbrc_id_ref_get_by_id", description="Get ID reference data by ID. Parameters: id (str) - ID to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_id_ref_get_by_id(id: str, limit: int = default_limit,
+
+    
+    @mcp.tool()
+    def bvbrc_id_ref_get_by_id(id: str, limit: int = _default_limit,
                                select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get ID reference data by ID.
@@ -48,14 +57,14 @@ def register_id_ref_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_id_ref_by_id(id, options, base_url)
+            result = query_id_ref_by_id(id, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying ID reference by ID: {str(e)}"
 
 
-    @tool(name="bvbrc_id_ref_query_by_filters", description="Query ID reference data by custom filters. Parameters: filters_json (str) - JSON string of filter criteria; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_id_ref_query_by_filters(filters_json: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_id_ref_query_by_filters(filters_json: str, limit: int = _default_limit,
                                      select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Query ID reference data by custom filters.
@@ -81,14 +90,14 @@ def register_id_ref_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_id_ref_by_filters(filters, options, base_url)
+            result = query_id_ref_by_filters(filters, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying ID reference by filters: {str(e)}"
 
 
-    @tool(name="bvbrc_id_ref_get_by_id_type", description="Get ID reference data by ID type. Parameters: id_type (str) - ID type to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_id_ref_get_by_id_type(id_type: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_id_ref_get_by_id_type(id_type: str, limit: int = _default_limit,
                                     select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get ID reference data by ID type.
@@ -109,14 +118,14 @@ def register_id_ref_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_id_ref_by_id_type(id_type, options, base_url)
+            result = query_id_ref_by_id_type(id_type, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying ID reference by ID type: {str(e)}"
 
 
-    @tool(name="bvbrc_id_ref_get_by_id_value", description="Get ID reference data by ID value. Parameters: id_value (str) - ID value to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_id_ref_get_by_id_value(id_value: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_id_ref_get_by_id_value(id_value: str, limit: int = _default_limit,
                                      select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get ID reference data by ID value.
@@ -137,14 +146,14 @@ def register_id_ref_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_id_ref_by_id_value(id_value, options, base_url)
+            result = query_id_ref_by_id_value(id_value, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying ID reference by ID value: {str(e)}"
 
 
-    @tool(name="bvbrc_id_ref_get_by_uniprotkb_accession", description="Get ID reference data by UniProtKB accession. Parameters: uniprotkb_accession (str) - UniProtKB accession to query; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_id_ref_get_by_uniprotkb_accession(uniprotkb_accession: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_id_ref_get_by_uniprotkb_accession(uniprotkb_accession: str, limit: int = _default_limit,
                                                select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get ID reference data by UniProtKB accession.
@@ -165,14 +174,14 @@ def register_id_ref_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_id_ref_by_uniprotkb_accession(uniprotkb_accession, options, base_url)
+            result = query_id_ref_by_uniprotkb_accession(uniprotkb_accession, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying ID reference by UniProtKB accession: {str(e)}"
 
 
-    @tool(name="bvbrc_id_ref_get_by_date_inserted_range", description="Get ID reference data by date inserted range. Parameters: start_date (str) - start date in YYYY-MM-DD format; end_date (str) - end date in YYYY-MM-DD format; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_id_ref_get_by_date_inserted_range(start_date: str, end_date: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_id_ref_get_by_date_inserted_range(start_date: str, end_date: str, limit: int = _default_limit,
                                                 select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get ID reference data by date inserted range.
@@ -194,14 +203,14 @@ def register_id_ref_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_id_ref_by_date_inserted_range(start_date, end_date, options, base_url)
+            result = query_id_ref_by_date_inserted_range(start_date, end_date, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying ID reference by date inserted range: {str(e)}"
 
 
-    @tool(name="bvbrc_id_ref_get_by_date_modified_range", description="Get ID reference data by date modified range. Parameters: start_date (str) - start date in YYYY-MM-DD format; end_date (str) - end date in YYYY-MM-DD format; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_id_ref_get_by_date_modified_range(start_date: str, end_date: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_id_ref_get_by_date_modified_range(start_date: str, end_date: str, limit: int = _default_limit,
                                                select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get ID reference data by date modified range.
@@ -223,14 +232,14 @@ def register_id_ref_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_id_ref_by_date_modified_range(start_date, end_date, options, base_url)
+            result = query_id_ref_by_date_modified_range(start_date, end_date, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying ID reference by date modified range: {str(e)}"
 
 
-    @tool(name="bvbrc_id_ref_search_by_keyword", description="Search ID reference data by keyword. Parameters: keyword (str) - keyword to search for; limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_id_ref_search_by_keyword(keyword: str, limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_id_ref_search_by_keyword(keyword: str, limit: int = _default_limit,
                                       select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Search ID reference data by keyword.
@@ -251,14 +260,14 @@ def register_id_ref_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_id_ref_by_keyword(keyword, options, base_url)
+            result = query_id_ref_by_keyword(keyword, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error searching ID reference by keyword: {str(e)}"
 
 
-    @tool(name="bvbrc_id_ref_get_all", description="Get all ID reference data. Parameters: limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_id_ref_get_all(limit: int = default_limit,
+    @mcp.tool()
+    def bvbrc_id_ref_get_all(limit: int = _default_limit,
                              select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Get all ID reference data.
@@ -278,7 +287,7 @@ def register_id_ref_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_id_ref_all(options, base_url)
+            result = query_id_ref_all(options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying all ID reference data: {str(e)}"

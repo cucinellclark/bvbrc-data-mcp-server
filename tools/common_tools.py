@@ -7,18 +7,27 @@ This module contains shared MCP tools for BV-BRC data access.
 
 from typing import Optional
 
-from flaskmcp import tool
+from fastmcp import FastMCP
+# Global variables to store configuration
+_base_url = None
+_default_limit = None
+
 from data_functions import (
     query_direct,
     format_query_result
 )
 
 
-def register_common_tools(base_url: str, default_limit: int):
+def register_common_tools(mcp: FastMCP, base_url: str, default_limit: int):
     """Register common MCP tools with the Flask app."""
+    global _base_url, _default_limit
+    _base_url = base_url
+    _default_limit = default_limit
     
-    @tool(name="bvbrc_query_direct", description="Query BV-BRC data directly using core name and filter string. Parameters: core (str) - core/collection name (e.g., 'genome', 'genome_feature'); filter_str (str, optional) - RQL filter string (e.g., 'eq(genome_id,123.45)'); limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
-    def bvbrc_query_direct(core: str, filter_str: str = "", limit: int = default_limit,
+
+    
+    @mcp.tool()
+    def bvbrc_query_direct(core: str, filter_str: str = "", limit: int = _default_limit,
                           select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
         Query BV-BRC data directly using core name and filter string.
@@ -40,7 +49,7 @@ def register_common_tools(base_url: str, default_limit: int):
             options["sort"] = sort
         
         try:
-            result = query_direct(core, filter_str, options, base_url)
+            result = query_direct(core, filter_str, options, _base_url)
             return format_query_result(result)
         except Exception as e:
             return f"Error querying {core}: {str(e)}"
