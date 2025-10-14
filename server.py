@@ -4,15 +4,14 @@ BV-BRC Data MCP Server
 
 This MCP server provides access to BV-BRC (Bacterial and Viral Bioinformatics Resource Center) 
 data through the bvbrc-solr-python-api module. It exposes genome and genome feature data 
-querying capabilities through MCP tools using FlaskMCP.
+querying capabilities through MCP tools using FastMCP.
 """
 
 import json
 import sys
 from typing import Any, Dict, List, Optional
 
-from flask import Flask
-from flaskmcp import create_app
+from fastmcp import FastMCP
 
 # Import tool modules
 from tools import (
@@ -59,18 +58,20 @@ try:
 except FileNotFoundError:
     print("Warning: config.json not found, using defaults", file=sys.stderr)
     config = {
-        "base_url": "https://www.bv-brc.org/api",
+        "base_url": "https://www.bv-brc.org/bulk-api",
+        "mcp_url": "127.0.0.1",
         "port": 8059,
         "default_limit": 1000
     }
 
 # Get configuration values
-base_url = config.get("base_url", "https://www.bv-brc.org/api")
+base_url = config.get("base_url", "https://www.bv-brc.org/bulk-api")
 default_limit = config.get("default_limit", 1000)
+mcp_url = config.get("mcp_url", "127.0.0.1")
 port = config.get("port", 8059)
 
-# Create Flask app and MCP server
-app = create_app({'DEBUG': True})
+# Create FastMCP server
+mcp = FastMCP("BV-BRC Data MCP Server")
 
 # Register all tools from the modular files
 register_genome_tools(base_url, default_limit)
@@ -109,20 +110,12 @@ register_taxonomy_tools(base_url, default_limit)
 register_common_tools(base_url, default_limit)
 
 
-# Optional: Add a health check route
-@app.route('/health', methods=['GET'])
-def health_check():
-    """Health check endpoint"""
-    from flask import jsonify
-    return jsonify({"status": "healthy", "service": "bvbrc-data-mcp"})
-
-
 def main() -> int:
     """Main entry point for the BV-BRC Data MCP Server."""
-    print(f"Starting BV-BRC Data MCP Flask Server on port {port}...", file=sys.stderr)
+    print(f"Starting BV-BRC Data MCP Server...", file=sys.stderr)
     
     try:
-        app.run(host="127.0.0.1", port=port, debug=True)
+        mcp.run(host=mcp_url, port=port)
     except KeyboardInterrupt:
         print("Server stopped.", file=sys.stderr)
     except Exception as e:
