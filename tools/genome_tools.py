@@ -172,7 +172,7 @@ def register_genome_tools(mcp: FastMCP, base_url: str, default_limit: int):
             return f"Error querying genome by genus: {str(e)}"
 
 
-    @tool(name="bvbrc_genome_query_by_filters", description="Query genome data by custom filters. Parameters: filters_json (str) - JSON string of filter criteria (e.g., '{\"genus\": \"Escherichia\", \"species\": \"coli\"}'); limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_genome_query_by_filters(filters_json: str, limit: int = _default_limit,
                                      select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
