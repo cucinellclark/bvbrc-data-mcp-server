@@ -63,7 +63,7 @@ def register_enzyme_class_ref_tools(mcp: FastMCP, base_url: str, default_limit: 
             return f"Error querying enzyme class reference by EC number: {str(e)}"
 
 
-    @tool(name="bvbrc_enzyme_class_ref_query_by_filters", description="Query enzyme class reference data by custom filters. Parameters: filters_json (str) - JSON string of filter criteria (e.g., '{\"ec_description\": \"alcohol dehydrogenase\", \"go\": \"GO:0004024\"}'); limit (int, optional) - max results (default: 1000); select (str, optional) - comma-separated field list; sort (str, optional) - sort field")
+    @mcp.tool()
     def bvbrc_enzyme_class_ref_query_by_filters(filters_json: str, limit: int = _default_limit,
                                                select: Optional[str] = None, sort: Optional[str] = None) -> str:
         """
