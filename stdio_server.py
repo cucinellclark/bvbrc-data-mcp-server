@@ -59,11 +59,12 @@ default_limit = int(os.getenv("BVBRC_DEFAULT_LIMIT", "1000"))
 mcp = FastMCP("BV-BRC Data MCP Server (STDIO)")
 
 # Register all tools from the modular files
-register_genome_tools(mcp, base_url, default_limit)
+register_bioset_result_tools(mcp, base_url)
+'''
 register_genome_feature_tools(mcp, base_url, default_limit)
-register_antibiotics_tools(mcp, base_url, default_limit)
-register_bioset_tools(mcp, base_url, default_limit)
-register_bioset_result_tools(mcp, base_url, default_limit)
+register_antibiotics_tools(mcp, base_url)
+register_genome_tools(mcp, base_url)
+register_bioset_tools(mcp, base_url)
 register_enzyme_class_ref_tools(mcp, base_url, default_limit)
 register_epitope_assay_tools(mcp, base_url, default_limit)
 register_epitope_tools(mcp, base_url, default_limit)
@@ -92,6 +93,7 @@ register_subsystem_ref_tools(mcp, base_url, default_limit)
 register_subsystem_tools(mcp, base_url, default_limit)
 register_surveillance_tools(mcp, base_url, default_limit)
 register_taxonomy_tools(mcp, base_url, default_limit)
+'''
 register_common_tools(mcp, base_url, default_limit)
 
 
