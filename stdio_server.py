@@ -7,7 +7,7 @@ data through the bvbrc-solr-python-api module. It exposes genome and genome feat
 querying capabilities through MCP tools using FastMCP via stdio communication.
 """
 
-import json
+import os
 import sys
 from typing import Any, Dict, List, Optional
 
@@ -51,21 +51,9 @@ from tools import (
     register_common_tools
 )
 
-# Load configuration
-try:
-    with open('config.json', 'r') as f:
-        config = json.load(f)
-except FileNotFoundError:
-    print("Warning: config.json not found, using defaults", file=sys.stderr)
-    config = {
-        "base_url": "https://www.bv-brc.org/bulk-api",
-        "default_limit": 1000,
-        "auth_url": "https://user.patricbrc.org/authenticate"
-    }
-
-# Get configuration values
-base_url = config.get("base_url", "https://www.bv-brc.org/bulk-api")
-default_limit = config.get("default_limit", 1000)
+# Load configuration from environment variables
+base_url = os.getenv("BVBRC_BASE_URL", "https://www.bv-brc.org/api-bulk")
+default_limit = int(os.getenv("BVBRC_DEFAULT_LIMIT", "1000"))
 
 # Create FastMCP server
 mcp = FastMCP("BV-BRC Data MCP Server (STDIO)")
