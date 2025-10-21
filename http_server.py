@@ -115,7 +115,7 @@ def main() -> int:
     print(f"Starting BV-BRC Data MCP Server...", file=sys.stderr)
     
     try:
-        mcp.run(host=mcp_url, port=port)
+        mcp.run(transport="http", host=mcp_url, port=port)
     except KeyboardInterrupt:
         print("Server stopped.", file=sys.stderr)
     except Exception as e:
