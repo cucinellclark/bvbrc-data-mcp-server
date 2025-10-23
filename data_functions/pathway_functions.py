@@ -7,7 +7,6 @@ This module provides pathway querying functions for the BV-BRC Solr API.
 from typing import Any, Dict, List, Tuple
 from .common_functions import create_bvbrc_client
 
-
 def query_pathway_by_id(id: str, options: Dict[str, Any] = None,
                        base_url: str = None, headers: Dict[str, str] = None) -> Tuple[List[Dict[str, Any]], int]:
     """
@@ -182,7 +181,6 @@ def query_pathway_by_alt_locus_tag(alt_locus_tag: str, options: Dict[str, Any] =
     for doc in pager:
         results.append(doc)
     return results, len(results)
-
 
 def query_pathway_by_annotation(annotation: str, options: Dict[str, Any] = None,
                                 base_url: str = None, headers: Dict[str, str] = None) -> Tuple[List[Dict[str, Any]], int]:
