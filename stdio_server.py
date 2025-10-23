@@ -59,8 +59,7 @@ default_limit = int(os.getenv("BVBRC_DEFAULT_LIMIT", "1000"))
 mcp = FastMCP("BV-BRC Data MCP Server (STDIO)")
 
 # Register all tools from the modular files
-register_sp_gene_tools(mcp, base_url)
-'''
+register_common_tools(mcp, base_url)
 register_antibiotics_tools(mcp, base_url)
 register_bioset_tools(mcp, base_url)
 register_bioset_result_tools(mcp, base_url)
@@ -87,14 +86,13 @@ register_serology_tools(mcp, base_url)
 register_sp_gene_ref_tools(mcp, base_url)
 register_spike_lineage_tools(mcp, base_url)
 register_spike_variant_tools(mcp, base_url)
+register_sp_gene_tools(mcp, base_url)
 register_strain_tools(mcp, base_url)
 register_structured_assertion_tools(mcp, base_url)
 register_subsystem_ref_tools(mcp, base_url)
 register_subsystem_tools(mcp, base_url)
 register_surveillance_tools(mcp, base_url)
 register_taxonomy_tools(mcp, base_url)
-'''
-register_common_tools(mcp, base_url)
 
 
 def main() -> int:
